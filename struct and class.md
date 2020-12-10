@@ -49,3 +49,188 @@ if vs === ts {
 }
 ```
 
+일반적인 지침으로 다음 조건에 하나 이상 해당하면 구조체를 사용하라고 한다.
+
+> 1. 서로 연관된 몇 개의 기본 데이터 타입들을 캡슐화하여 묶는 것이 목적일 때
+> 2. 캡슐화된 데이터에 상속이 필요하지 않을 때
+> 3. 캡슐화된 데이터를 전달하거나 할당하는 과정에서 참조 방식보다는 값이 복사되는 것이 합리적일 때
+> 4. 캡슐화된 원본 데이터를 보존해야 할 때
+
+근데 음... 사실 대부분의 경우에 구조체보다는 클래스를 더 많이 쓰게 될 것 같아.
+
+## Property(프로퍼티)
+
+**새로운 관점인데, 프로퍼티의 역할을 단순히 값을 저장하는 데이 있다는 것으로 생각하면 안된다. 프로퍼티 중 일부는 값을 저장하지는 않지만 값을 제공하는 특성을 가진다(?)**
+
+스위프트에서는 값에 대한 저장 여부를 기준으로 저장 프로퍼티, 연산 프로퍼티로 나뉜다. 부가적으로 스위프트에서는 프로퍼티 값을 모니터링하기 위해 프로퍼티 옵저버(Property Observer)를 정의하여, 사용자가 정의한 특정 액션과 반응하도록 처리할 수 있다. 이것은 우리가 직접 정의한 저장 프로퍼티, 상속받은 서브 클래스에서도 추가할 수 있다.
+
+### Stored Property(저장 프로퍼티)
+
+저장 프로퍼티는 일반적으로 알고 있는, 클래스 나에서 선언된 변수, 상수를 말한다. 
+
+저장 프로퍼티를 선언할 때 초기화할 수 있지만, 선언할 때 반드시 해야하는 것은 아니다. 초기화 구문에서 해도 된다.
+
+다만 클래스에서 프로퍼티를 선언할 때 초기값을 함께 할당하지 않으면 신경 쓸 것이 많아진다. 스위프트에서는 클래스 프로퍼티를 초기화하지 않아주면 nil값을 넣는데, nil값이 들어가려면 옵셔널 타입이어야하잖아? 그래서 프로퍼티 선언할 때 초기값을 넣을 수 없으면 옵셔널 타입으로 정의한다. 근데 이때 우리를 편하게 해주는 문법, 바로 묵시적 옵셔널 해제 타입이다. '절대 nil이 되지 않지만, 아무튼 옵셔널임'. ! 연산자를 통해서 옵셔널 타입으로 지정해두면 해제 처리 할필요 없이 일반 변수처럼 쓸 수 있으니 편리하다!
+
+근데 굳이 옵셔널로 안해도 되는 경우가 있다. 초기화 구문에서 프로퍼티 값을 초기화해주면 프로퍼티를 굳이 옵셔널로 안해도 된다. 그러니깐, 프로퍼티가 초기화되는 순간은 곧 인스턴스가 생성될 때네. 헷갈릴 게 없어 명확해. 
+
+```swift
+// 초기화 구문으로 프로퍼티 초기화
+class User {
+    var name: String
+    
+    init() {
+        self.name = ""
+    }
+}
+```
+
+```swift
+// 프로퍼티를 옵셔널 타입으로
+class User {
+    var name: String?
+}
+ 
+// or
+// 프로퍼티 값이 nil값이 되지 않을 자신이 있다면 묵시적 옵셔널 해제 타입을 사용하는 것이 편리!
+class User {
+    var name: String!
+}
+```
+
+```swift
+// 프로퍼티에 초기값 할당
+class User {
+    var name: String = ""
+}
+```
+
+구조체에서 상수, 변수로 프로퍼티를 저장하는 예제이다. 간단히 훑어만 보자.
+
+```swift
+// 고정 길이 범위 구조체
+struct FixedLengthRange {
+    var startValue: Int // 시작값
+    let length: Int // 값의 범위
+}
+
+// 가변 길이 범위 구조체
+struct FlexibleLengthRange {
+    let startValue: Int
+    var length: Int
+}
+
+var rangeOfFixedIntegers = FixedLengthRange(startValue: 0, length: 3)
+rangeOfFixedIntegers.startValue = 4
+
+var rangeOfFlexibleIntegers = FlexibleLengthRange(startValue: 0, length: 3)
+rangeOfFlexibleIntegers.length = 5
+```
+
+주의할 점은, 구조체의 경우 주소로 다루지 않고 값으로 다루기 때문에 구조체를 상수로 선언한 경우 프로퍼티의 값을 수정할 수 없게 된다(클래스는 상수로 선언해도 프로퍼티 값 수정 가능. 주소로 다루고 있으니깐!)
+
+#### 지연 저장 프로퍼티
+
+저장 프로퍼티 앖에 lazy 키워드를 붙이면, 이 프로퍼티는 클래스가 생성될 때도 선언만 될 뿐 초기화되지 않고 있다가 실제로 호출이 되면 초기화된다. 이를 지연 저장 프로퍼티라고 한다.
+
+```swift
+class OnCreate {
+    init() {
+        print("OnCreate!")
+    }
+}
+
+class LazyTest {
+    var base = 0
+    lazy var late = OnCreate()
+    
+    init() {
+        print("Lazy Test")
+    }
+}
+
+let lz = LazyTest() // "Lazy Test"
+lz.late // "OnCreate!"
+```
+
+#### 클로저를 이용한 저장 프로퍼티 초기화
+
+클로저를 활용해서 저장 프로퍼티를 연산이나 로직 처리를 통해 얻어진 값을 통해서 초기화할 수 있다. 구문의 형식은 처음 배우는 거니 익혀두자.
+
+```
+let/var 프로퍼티명: 타입 = {
+	정의내용
+	return 반환값
+}()
+```
+
+이렇게 정의된 클로저 구문은 클래스나 구조체 인스턴스가 생성될 때 같이 실행되서 초기값을 반환하고 이후에는 재실행되지 않는다. 저장 프로퍼티 값을 다시 참조해도 다시 호출되지 않고 값도 그대로다. 연산 프로퍼티와 비슷한 구문이지만 참조될 때마다 매번 재평가된 값을 반환하는 것과 다르다.
+
+```swift
+class PropertyInit {
+    // 저장 프로퍼티 - 인스턴스 생성 시 최초 한 번만 실행
+    var value01: String! = {
+        print("value01 execute")
+        return "value01"
+    }()
+    
+    // 저장 프로퍼티 - 인스턴스 생성 시 최초 한 번만 실행
+    var value02: String! = {
+        print("value02 execute")
+        return "value02"
+    }()
+}
+
+let s = PropertyInit()
+// value01 execute
+// value02 execute
+
+s.value01 // 실행결과 없음
+s.value02 // 실행결과 없음
+
+```
+
+이번엔 lazy 구문과 조합하여 메모리 자원을 효율적으로 활용해보자.
+
+```
+lazy var 프로퍼티명 : 타입 = {
+	정의 내용
+	return 반환값
+}()
+```
+
+lazy와 클로저 구문을 조합하면 프로퍼티가 최초 참조될 때만 클로저가 실행된다.
+
+```swift
+class PropertyInit {
+    // 저장 프로퍼티 - 인스턴스 생성 시 최초 한 번만 실행
+    var value01: String! = {
+        print("value01 execute")
+        return "value01"
+    }()
+    
+    // 저장 프로퍼티 - 인스턴스 생성 시 최초 한 번만 실행
+    var value02: String! = {
+        print("value02 execute")
+        return "value02"
+    }()
+    
+    // 프로퍼티 참조 시에 최초 한 번만 실행
+    lazy var value03: String! = {
+        print("value03 execute")
+        return "value03"
+    }()
+}
+
+let s = PropertyInit()
+s.value01 // 실행결과 없음
+s.value02 // 실행결과 없음
+
+s.value03 // value03 execute
+s.value03 // 실행결과 없음
+```
+
+이처럼 lazy 키워드를 붙여서 정의한 저장 프로퍼티를 클로저 구문으로 초기화하면 최초 한 번만 로직이 실행되는 데다 실제로 참조되는 시점에 맞추어 초기화되기 때문에 메모리 낭비를 줄일 수 있다. 특히 네트워크 소켓 관련 개발을 할 때 서버와의 소켓 통신 채널을 최초 한 번만 연결해 둔 다음 이를 재사용하여 통신하는 경우가 대부분이기 때문에, lazy 프로퍼티를 클로저로 초기화하여 연결 객체를 저장하는 이같은 방식이 매우 효율적이다.
+
+### Computed Property(연산 프로퍼티)
+
