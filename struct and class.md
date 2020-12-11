@@ -234,3 +234,90 @@ s.value03 // 실행결과 없음
 
 ### Computed Property(연산 프로퍼티)
 
+구조체와 클래스에서 저장 프로퍼티 외에 연산 프로퍼티를 정의해서 사용할 수 있음. 연산 프로퍼티도 필요한 값을 제공한다는 점에서 비슷하지만 실제 값을 저장했다가 반환하는 것이 아닌 다른 프로퍼티의 값을 연산 처리하여 간접적으로 값을 제공함. 
+
+이때 다른 프로퍼티의 값을 참조하기 위해 내부적으로 사용하는 구문이 get 구문. 또한 선택적으로 set 구문을 추가하여 연산 프로퍼티에 값을 할당하거나 변경할 수 있다. 물론 연산 프로퍼티 자체가 값을 저장하지는 않으므로 이때 할당되는 값은 연산의 중요한 요소로 사용됨.
+
+연산 프로퍼티의 형태는 다음과 같음.
+
+```
+class/struct/enum 객체명 {
+	...
+	var 프로퍼티명 : 타입 {
+		get {
+			필요한 연산 과정
+			return 반환값
+		}
+		set(매개변수명) {
+			필요한 연산구문
+		}
+	}
+}
+```
+
+연산 프로퍼티는 다른 프로퍼티에 의존적이거나, 혹은 특정 연산을 통해 얻을 수 있는 값을 정의할 때 사용된다. 대표적인 것으로 개인 정보 중에서 나이가 이에 속한다. 나이는 출생연도에 의존적이며 현재 연도를 기준으로 계산해야 하므로 매년 그 값이 달라지니깐.
+
+```swift
+import Foundation
+
+struct UserInfo {
+    // 저장 프로퍼티: 태어난 연도
+    var birth: Int!
+    
+    var thisYear: Int! {
+        get {
+            let df = DateFormatter()
+            df.dateFormat = "yyyy"
+            return Int(df.string(from: Date()))
+        }
+    }
+    
+    var age: Int {
+        get {
+            return (self.thisYear - self.birth) + 1
+        }
+    }
+}
+
+
+let info = UserInfo(birth: 1997)
+print(info.age)
+```
+
+또 다른 예시로 특정 사각형에 대한 정보를 저장하는 구조체에서 연산 프로퍼티를 사용하여 사각형의 중심 좌표를 구하는 예제. 위 예제보다 조금 더 복잡함.
+
+```swift
+struct Rect {
+    // 사각형이 위치한 기준 좌표(좌측 상단 기준)
+    var originX: Double = 0.0, originY: Double = 0.0
+    
+    // 가로 세로 길이
+    var sizeWidth: Double = 0.0, sizeHeight: Double = 0.0
+    
+    // 사각형의 X 좌표 중심
+    var centerX: Double {
+        get {
+            return self.originX + (sizeWidth / 2)
+        }
+        
+        set(newCenterX) {
+            originX = newCenterX - (sizeWidth / 2)
+        }
+    }
+    
+    // 사각형의 Y 좌표 중심
+    var centerY: Double {
+        get {
+            return self.originY + (self.sizeHeight / 2)
+        }
+        
+        set(newCenterY) {
+            self.originY = newCenterY - (self.sizeHeight / 2)
+        }
+    }
+}
+
+var square = Rect(originX: 0.0, originY: 0.0, sizeWidth: 10.0, sizeHeight: 10.0)
+print("square.centerX = \(square.centerX), square.centerY = \(square.centerY)")
+```
+
