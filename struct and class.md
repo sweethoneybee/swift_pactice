@@ -321,3 +321,91 @@ var square = Rect(originX: 0.0, originY: 0.0, sizeWidth: 10.0, sizeHeight: 10.0)
 print("square.centerX = \(square.centerX), square.centerY = \(square.centerY)")
 ```
 
+좌표 x, y와 가로세로 길이는 저장 프로퍼티로 정의되었지만 사각형의 중심 좌표는 이에 의존적이기 때문에 연산 프로퍼티로 설정되었다. 물론 연산 프로퍼티를 사용하지 않고 매번 중심 좌표를 저장 프로퍼티 값을 받아서 계산할 수도 있겠지만 그러면 코드가 반복되고 불편하다. 
+
+연산 프로퍼티는 100% 필요하다기 보다는 다른 언어에선 get 메소드로 구현하는 걸 구현해놓은 느낌이다.
+
+여기에 조금 더 욕심을 내서, 이 구조체를 객체지향에 맞게 개선해보자. Rect 구조체는 네 개의 저장 프로퍼티를 담고 있지만 이 프로퍼티들은 서로 연관성이 있는 두 개씩의 프로퍼티로 이루어져 있으니 이걸 기준으로 두 개의 구조체를 정의해보자
+
+```swift
+struct Position {
+    var x: Double = 0.0
+    var y: Double = 0.0
+}
+
+struct Size {
+    var width: Double = 0.0
+    var height: Double = 0.0
+}
+
+struct Rect {
+    // 사각형이 위치한 기준 좌표(좌측 상단 기준)
+    var origin = Position()
+    
+    // 가로 세로 길이
+    var size = Size()
+    
+    // 사각형의 좌표 중심
+    var center: Position {
+        get {
+            let centerX = self.origin.x + (self.size.width / 2)
+            let centerY = self.origin.y + (self.size.height / 2)
+            return Position(x: centerX, y: centerY)
+        }
+        
+        set(newCenter) {
+            self.origin.x = newCenter.x + (size.width / 2)
+            self.origin.y = newCenter.y + (size.height / 2)
+        }
+    }
+}
+
+let p = Position(x: 0.0, y: 0.0)
+let s = Size(width: 10.0, height: 10.0)
+
+var square = Rect(origin: p, size: s)
+print("square.centerX = \(square.center.x), square.centerY = \(square.center.y)")
+```
+
+연산 프로퍼티의 set 구문은 활용하기에 따라 다른 저장 프로퍼티의 값을 변경하는 데에도 사용할 수 있다. 여기서는 중심 좌표를 옮김으로써 기준 좌표의 위츠를 이동시켰다.
+
+center 프로퍼티의 set 구문을 살펴보자. 연산 프로퍼티에 값을 할당하면 여기에 정의된 구문이 실행된다. 프로퍼티에 할당된 값은 set 다음에 오는 괄호의 인자값으로 전달되는 것이고, 이때 인자값의 참조를 위해 매개변수가 사용된다. 매개변수명이 생략된다면  'newValue'라는 기본 인자명이 사용된다.
+
+그리고 타입도 적을 필요가 없다. 어차피 입력할 수 있는 타입은 연산 프로퍼티의 타입으로 정해져 있어서 매개변수에는 타입을 생략할 수 있는 것이다.
+
+그럼 이제 중심 좌표의 값을 변경해보자.
+
+```swift
+square.center = Position(x: 20.0, y: 20.0)
+print("square.centerX = \(square.origin.x), square.centerY = \(square.origin.y)")
+```
+
+연산 프로퍼티  center에 값을 할당하면 해당 인스턴스를 인자값으로 하는 set 구문이 실행된다. 그러면서  origin 프로퍼티의 x, y 서브 프로퍼티 값이 모두 바뀌었다.
+
+그런데 이런 걸 방지해야할 때도 있다. 예를 들어 배열의 크기는 count로 알 수 있는데 임의로 count를 바꿔버리면 문제가 생길 것이다. 그래서 count 프로퍼티는 수정할 수 없도록 제약을 가해야한다.
+
+이를 위해서는 set 구문만 제거하면 된다. 이러면 프로퍼티를 통해 값을 읽기만 할 뿐 할당은 할 수 없다. 이처럼 읽기만 가능하고 쓰기는 불가능한 프로퍼티를 **read-only 프로퍼티, 또는 get-only 프로퍼티라하고 우리말로 읽기 전용 프로퍼티라고도 한다.**
+
+```swift
+var center: Position {
+  get {
+    let centerX = self.origin.x + (self.size.width / 2)
+    let centerY = self.origin.y + (self.size.height / 2)
+    return Position(x: centerX, y: centerY)
+  }
+}
+```
+
+```swift
+// 같은 구문 다른 문법
+// 읽기 전용으로 설정된 연산 프로퍼티는 get 블록의 구분을 생략할 수 있음
+var center: Position {
+    let centerX = self.origin.x + (self.size.width / 2)
+    let centerY = self.origin.y + (self.size.height / 2)
+    return Position(x: centerX, y: centerY)
+}
+```
+
+계속 내가 의아했던 것과 동일하게 연산 프로퍼티는 사실 메소드 형식으로 표현할 수 있다. 자바는 get, set 메소드로 이를 구분한다. 연산 프로퍼티의 get 구문이 get 메소드,  set 구문이 set 메소드로 대체되는 것. 오브젝트-C 도 연산 프로퍼티 구현 목적으로 get, set 메소드를 자동으로 만들어주기도 한다.
+
+추가로 이 연산 프로퍼티의 get, set 구문은 C#에서 빌려온 개념이라고 한다.
