@@ -538,5 +538,216 @@ print(Boo.cFoo)
 
 ## 메소드
 
+프로퍼티처럼 인스턴스 메소드, 타입 메소드로 나뉘고 성격도 비슷하다. 타입 메소드는 오브젝티브-C의 클래스 메소드와 유사하다. 구조체 내의 메소드와 클래스 내의 메소드는 수정 여부에 대한 몇 가지 항목을 제외하면 거의 비슷하다.
+
+```swift
+struct Resolution {
+    var width = 0
+    var height = 0
+    
+    // 구조체의 요약된 설명을 리턴해주는 인스턴스 메소드
+    func desc() -> String {
+        let desc = "이 해상도는 가로 \(self.width) \(self.height)로 구성됩니다."
+        return desc
+    }
+}
+
+class VideoMode {
+    var resolution = Resolution()
+    var interlaced = false
+    var frameRate = 0.0
+    var name: String?
+    
+    // 클래스의 요약된 설명을 리턴해주는 인스턴스 메소드\
+    func desc() -> String {
+        if self.name != nil {
+            let desc = "이 \(self.name!) 비디오 모드는 \(self.frameRate)의 프레임 비율로 표시됩니다."
+            return desc
+        } else {
+            let desc = "이 비디오 모드는 \(self.frameRate)의 프레임 비율로 표시됩니다."
+            return desc
+        }
+    }
+}
+```
+
+self 키워드는 클래스나 구조체 자신을 가리킨다. self를 붙이지 않아도 컴파일러가 프로퍼티를 잘 가져와주지만 동일한 이름을 가진 변수나 상수가 있는 경우 이를 구분하기 위해 self를 꼭 프로퍼티 앞에 붙여주자.
+
+메소드도 클래스, 구조체, 열거형에 속해있다는 것 외에는 함수랑 거의 같기 때문에 매개변수 라벨이나 이름 역시 똑같다. 다만 주의할 점은, 구조체나 열거형의 인스턴스 메소드 내부에서 프로퍼티의 값을 수정할 때는 반드시 메소드 앞에  mutating이라는 키워드를 추가해야 한다. 이게 없이 메소드 내에서 값을 변경하고자 하면 오류가 난다. 또 구조체나 열거형 인스턴스를 상수로 할당받으면  mutating 메소드를 호출할 수 없게 된다. 상수에 할당받았으니 값을 수정할 수 없기 때문에. 
+
+```swift
+struct Point {
+    var x = 0.0, y = 0.0
+    mutating func moveByX(x deltaX: Double, y deltaY: Double) {
+        self.x += deltaX
+        self.y += deltaY
+    }
+}
+
+var point = Point(x: 10.5, y:12.0)
+point.moveByX(x: 3.0, y: 4.5)
+print("이제 새로운 좌표는 (\(point.x), \(point.y))입니다.")\
+```
+
+하지만 클래스 인스턴스 메소드는 별도의 키워드가 필요없이 맘껏 프로퍼티의 값을 수정할 수 있다.
+
+## 타입 메소드
+
+타입 프로퍼티와 동일한 개념이다. 역시  static 키워드로 선언 가능하고,  class 키워드는 클래스에서만 가능하고 상속받아서 재정의할 수 있는 타입 프로퍼티를 만드는 키워드다.
+
+```swift
+class Foo {
+    // 타입 메소드 선언
+    class func fooTypeMethod() {
+        // 타입 메소드 구현 내용 들어감
+    }
+}
+
+let f = Foo()
+f.fooTypeMothod() // 오류
+Foo.fooTypeMethod()
+```
+
+타입 메소드는 당연히! 인스턴스 프로퍼티를 참조할 수 없고 오직 타입 프로퍼티만을 참조할 수 있다.
+
+## 상속
+
+스위프트도 다른 객체지향에서 보이는 것과 마찬가지로 상속이 가능하다. 프로퍼티, 메소드를 물려주는 클래스에는 부모, 슈퍼, 상위, 기본 클래스 용어가 사용되고 물려받는 클래스에는 자식, 서브, 하위, 파생 클래스 용어가 사용된다.
+
+C++와는 다르게 다중상속을 지원하지 않는다(사실 지원해도 쓰기는 위험이 많이 따르긴 하지...). 상속 받는 문법은 C++과 동일하게 클래스 이름 옆에 콜론(:)을 통해서 클래스 이름을 명시하는 것이고, 여기에 첫 번째로 쓴 클래스만 상속 가능하고 다른 것들은 구현체에 불과하다.
+
+```swift
+class A {
+    var name = "Class A"
+    
+    var description: String {
+        return "This class name is \(self.name)"
+    }
+    
+    func foo() {
+        print("\(self.name)'s method foo is called")
+    }
+}
+
+class B: A {
+    var prop = "Class B"
+    
+    func boo() -> String {
+        return "Class B prop = \(self.prop)"
+    }
+}
+
+let b = B()
+b.prop // "Class B"
+b.boo() // "Class B prop = Class B
+
+b.name // "Class A"
+b.foo() // "Class A's method foo is called"
+
+b.name = "Class C"
+b.foo() // "Class C's method foo is called"
+```
+
+우선 상속의 내용은 다른 객체지향 언어와 같은 내용이라 생략한다.
+
+## 오버라이딩
+
+자식 클래스에서 부모 클래스에게 상속받은 프로퍼티나 메소드를 재정의하면 이를 오버라이딩이라고 한다.
+
+스위프트에는 override라는 키워드를 메소드나 프로퍼티 앞에 붙여야 오버라이딩할 수 있다. 그래서 개발자가 실수를 걱정할 필요 없이 마음놓고 자식 클래스에서 프로퍼티랑 메소드를 추가할 수 있다. override 키워드를 붙이지 않고 오버라이딩 하면 컴파일러가 오류를 잡아주고, 오버라이딩 하지 않는데 override를 붙여도 오류로 잡아준다. 편하다.
+
+눈 여겨 봐야할 점은, 프로퍼티는 저장 프로퍼티이건 연산 프로퍼티이건 관계없이 오버라이딩을 하려면 모두 연산프로퍼티로 해줘야한다는 것이다. 저장 프로퍼티로 오버라이딩은 의미가 없고(그냥 재할당하면 되니깐) 연산 프로퍼티를 저장 프로퍼티로 오버라이딩 하는 것은 언산 프로퍼티 자체를 오버라이딩 하는 것으로도 충분히 가능하다. 
+
+또 추가로 저장 프로퍼티는 읽고 쓰기가 모두 허용하는 만큼 연산 프로퍼티로 오버라이딩 할 경우에는 get, set 구문을 모두 제공해줘야한다. 같은 맥락에서 get, set을 모두 제공하던 연산 프로퍼티를 get 만 제공할 순 없다. 읽기만 제공한 프로퍼티는 get, set으로 확장가능하다. 정리하자면, 오버라이딩은 상위 클래스의 기능을 확장, 또는 변경하는 방식으로 진행해야하고 제한하는 방식으론 진행이 불가능하다. 예시를 보자.
+
+```swift
+class Vehicle {
+    var currentSpeed = 0.0
+    
+    var description: String {
+        return "시간당 \(self.currentSpeed)의 속도로 이동하고 있습니다."
+    }
+    
+    func makeNoise() {
+        // 임의의 교통수단에는 경적 필요 없음
+    }
+}
+
+class Car: Vehicle {
+    var gear = 0
+    var engineLevel = 0
+    
+    override var currentSpeed: Double {
+        get {
+            return Double(self.engineLevel * 50)
+        }
+        set {
+            // 아무것도 하지 않음
+        }
+    }
+    override var description: String {
+        get {
+            return "Car : engineLevel=\(self.engineLevel), so currentSpeed=\(self.currentSpeed)"
+        }
+        set {
+            print("New value is \(newValue)")
+        }
+    }
+}
+
+let c = Car()
+
+c.engineLevel = 5
+c.currentSpeed // 250
+c.description = "New Class Car"
+
+print(c.description)
+```
+
+저장 프로퍼티를 오버라이딩 할 때 set 구문이 아무일도 하지 않더라도 반드시 있어야한다(저장 프로퍼티가 읽고 쓰기가 가능하기 때문). 그래서 description 도 같은 맥락에서 get, set 을 구현해야한다.
+
+또 상속하면서 프로퍼티가 상수나 읽기 전용 프로퍼티만 아니면 옵저버를 붙여줄 수도 있다.
+
+(근데 아래 예시는, 지금 코드에서는 의미가 없는듯. 왜냐하면  currentSpeed는 할당해도 set 구문이 따로 일을 안하기 때문에 gear 변경도 의미가 없다)
+
+```swift
+class AutomaticCar: Car {
+    override var currentSpeed: Double {
+        didSet {
+           
+            self.gear = Int(currentSpeed / 10.0) + 1 
+        }
+    }
+}
+```
+
+메소드는 오버라이딩이 조금 더 까다롭다. 메소드 이름, 매개변수명, 매개변수 개수, 매개변수 타입, 리턴 타입이 전부 동일해야 오버라이딩이 된다. 매개변수의 타입과 종류가 다르면 서로 다른 메소드로 처리하는 것이 오버로딩이다. 다른 언어와 비슷한 특징을 보이지만 스위프트는 매개변수 명도 메소드 정의에 포함되어서 매개변수 개수, 타입이 일치해도 이름이 다르면 오버로딩 된다. 오버로딩 때에는 당연이  override 키워드를 붙이면 안된다.
+
+프로퍼티와 메소드를 오버라이딩한 뒤에 상속받은 부모 클래스의 인스턴스를 참조하기 위해  super 라는 키워드를 사용한다. 바로 위의 부모클래스의 것만 참조할 수 있고 우리가 자신을 self. 으로 참조하듯이 super. 으로 참조하면 된다.
+
+또 자바와 비슷하게,  final이라는 키워드를 통해서(또 베꼈냐! 스위프트! ) 메소드 오버라이드를 막을 수 있다. final 키워드는 메소드, 프로퍼티 앞에 붙이면 되고 클래스 자체에도 붙일 수 있다. final이 클래스에 붙으면 상속이 차단된다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
