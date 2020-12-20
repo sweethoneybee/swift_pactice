@@ -103,8 +103,21 @@ parseDate 함수를 호출하는 과정에서 문제가 없으면 Date 객체가
 
 ## 오류 객체 잡아내기
 
+객체를 던지고 잡는 부분은 다른 언어와 비슷한데, 형태는 다음과 같다.
+
 ```swift
-func getPartsDate(date: NSString, type: String) {
+do {
+  try <오류를 던질 수 있는 함수>
+} catch <오류타입1> {
+  
+} catch <오류타입2>
+...
+```
+
+특이한 점은 스위프트에는 finally 등과 같이 에러가 발생했을 때 반드시 실행되는 코드 블록을 지원하지 않는다는 점이다. 이 부분만 주의한다면 다른 언어와 비슷한 양상을 보인다. 마지막 예시 코드를 작성하고, 스위프트 문법편을 끝낸다.
+
+```swift
+func getPartsDat(date: NSString, type: String) {
     do {
         let date = try parseDate(param: date)
         
