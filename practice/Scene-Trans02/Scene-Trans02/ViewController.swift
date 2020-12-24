@@ -32,7 +32,7 @@ class ViewController: UIViewController {
         
         // 화면을 전환한다.
         self.present(uvc, animated: true){
-            ()->Void in 
+            ()->Void in
         }
     }
 }
