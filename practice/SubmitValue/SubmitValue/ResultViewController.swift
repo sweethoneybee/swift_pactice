@@ -12,8 +12,6 @@ class ResultViewController: UIViewController {
     var paramInterval: Double = 0
     
     override func viewDidLoad() {
-        NSLog("viewDidLoad 메소드 호출 완료. 이제 3초 기다립니다")
-        sleep(3)
         self.resultEmail.text = paramEmail
         self.resultUpdate.text = self.paramUpdate == true ? "자동갱신" : "자동갱신안함"
         self.resultInterval.text = "\(Int(paramInterval))분마다 갱신"

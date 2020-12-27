@@ -53,7 +53,6 @@ class ViewController: UIViewController {
             return
         }
         
-        NSLog("rvc 생성 완료 직후")
         
         // 값 전달
         rvc.paramEmail = self.email.text! // 이메일
@@ -61,8 +60,8 @@ class ViewController: UIViewController {
         rvc.paramInterval = self.interval.value // 갱신 주기
     
         // 화면 이동
-        NSLog("화면 이동 직전")
-        self.present(rvc, animated: true)
+//        self.present(rvc, animated: true)
+        self.navigationController?.pushViewController(rvc, animated: true)
     }
 }
 
