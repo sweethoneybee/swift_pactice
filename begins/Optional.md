@@ -9,7 +9,7 @@
 ```swift
 var optInt : Int?
 var optStr : String?
-var optDouble : Doube?
+var optDouble : Double?
 var optArr : [String]?
 var optDic : Dictionary<String, String>?
 var optClass : AnyObject?
