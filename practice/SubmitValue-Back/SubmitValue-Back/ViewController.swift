@@ -15,22 +15,36 @@ class ViewController: UIViewController {
     @IBOutlet var resultInterval: UILabel!
     
     // 값을 직접 전달받을 프로퍼티들
-    var paramEmail: String?
-    var paramUpdate: Bool?
-    var paramInterval: Double?
+//    var paramEmail: String?
+//    var paramUpdate: Bool?
+//    var paramInterval: Double?
     
     // 화면이 표시될 때마다 실행되는 메소드. 처음 뷰가 등장할 때는 viewDidLoad() 호출 후 이 메소드가 호출된다.
     override func viewWillAppear(_ animated: Bool) {
-        NSLog("viewWillApear 메소드 호출")
-        if let email = paramEmail {
+//        if let email = paramEmail {
+//            resultEmail.text = email
+//        }
+//
+//        if let update = paramUpdate {
+//            resultUpdate.text = update==true ? "자동갱신":"자동갱신안함"
+//        }
+//
+//        if let interval = paramInterval {
+//            resultInterval.text = "\(Int(interval))분마다"
+//        }
+        
+        // AppDelegate 객체의 인스턴스 가져오기
+        let ad = UIApplication.shared.delegate as? AppDelegate
+
+        if let email = ad?.paramEmail {
             resultEmail.text = email
         }
-        
-        if let update = paramUpdate {
+
+        if let update = ad?.paramUpdate {
             resultUpdate.text = update==true ? "자동갱신":"자동갱신안함"
         }
-        
-        if let interval = paramInterval {
+
+        if let interval = ad?.paramInterval {
             resultInterval.text = "\(Int(interval))분마다"
         }
     }
