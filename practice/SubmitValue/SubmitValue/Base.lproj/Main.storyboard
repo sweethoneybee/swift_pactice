@@ -71,6 +71,14 @@
                                 <color key="textColor" systemColor="systemRedColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RvC-N9-zxo">
+                                <rect key="frame" x="164" y="479" width="87" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="ActionSegue"/>
+                                <connections>
+                                    <segue destination="x8r-tg-gt8" kind="show" id="HTn-A6-hjA"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -78,7 +86,7 @@
                     <navigationItem key="navigationItem" title="Setting" id="anG-oI-3Sx">
                         <barButtonItem key="rightBarButtonItem" systemItem="action" id="Se7-Q4-bSI">
                             <connections>
-                                <action selector="onSubmit:" destination="BYZ-38-t0r" id="Wju-Ug-3a6"/>
+                                <action selector="onPerformSegue:" destination="BYZ-38-t0r" id="07X-Lc-8vZ"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -88,6 +96,7 @@
                         <outlet property="intervalText" destination="6Lr-FP-6eW" id="aR3-6j-G0j"/>
                         <outlet property="isUpdate" destination="PKw-nW-9lp" id="zAC-c9-I5z"/>
                         <outlet property="isUpdateText" destination="xze-L2-HFh" id="NoE-1w-gRr"/>
+                        <segue destination="x8r-tg-gt8" kind="show" identifier="ManualSubmit" id="tyc-qE-WRR"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -156,6 +165,7 @@
                         <viewLayoutGuide key="safeArea" id="o90-Iz-3Tf"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
+                    <navigationItem key="navigationItem" id="dXk-E5-FMU"/>
                     <connections>
                         <outlet property="resultEmail" destination="Jpl-Oj-Biw" id="NnG-ef-9dR"/>
                         <outlet property="resultInterval" destination="Omp-2P-RP5" id="tC2-ot-Tyk"/>
@@ -185,6 +195,9 @@
             <point key="canvasLocation" x="131.8840579710145" y="116.51785714285714"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="HTn-A6-hjA"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
