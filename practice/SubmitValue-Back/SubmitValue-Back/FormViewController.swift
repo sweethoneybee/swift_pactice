@@ -11,24 +11,15 @@ class FormViewController: UIViewController {
     
     // submit 버튼 클릭했을 때 호출되는 메소드
     @IBAction func onSubmit(_ sender: Any) {
-//        let preVc = self.presentingViewController
-//        guard let vc = preVc as? ViewController else {
-//            return
-//        }
-//
-//        vc.paramEmail = email.text
-//        vc.paramUpdate = isUpdate.isOn
-//        vc.paramInterval = interval.value
+        // UserDefaults 객체의 인스턴스 가져오기
+        let ud = UserDefaults.standard
         
-        // AppDelegate 객체 가져오기
-        let ad = UIApplication.shared.delegate as? AppDelegate
+        // 값을 저장
+        ud.set(self.email.text, forKey: "email")
+        ud.set(self.isUpdate.isOn, forKey: "isUpdate")
+        ud.set(self.interval.value, forKey: "interval")
         
-        // 값 저장
-        ad?.paramEmail = self.email.text
-        ad?.paramUpdate = self.isUpdate.isOn
-        ad?.paramInterval = self.interval.value
-        
-//        vc.dismiss(animated: true)
+        // 이전 화면 복귀
         self.presentingViewController?.dismiss(animated: true)
     }
     
