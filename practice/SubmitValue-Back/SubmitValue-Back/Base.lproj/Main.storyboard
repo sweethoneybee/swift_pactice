@@ -66,6 +66,22 @@
                                     <action selector="onRegister:" destination="BYZ-38-t0r" eventType="touchUpInside" id="UrA-ne-8rs"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4DD-V0-N1b">
+                                <rect key="frame" x="166" y="515" width="87" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="ActionSegue"/>
+                                <connections>
+                                    <segue destination="6Qb-hT-Gsd" kind="presentation" modalPresentationStyle="fullScreen" id="IOx-0u-OPx"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="coG-r6-Bdq">
+                                <rect key="frame" x="161" y="582" width="93" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="ManualSegue"/>
+                                <connections>
+                                    <action selector="onManualSegue:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RbT-JB-MFY"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -74,6 +90,7 @@
                         <outlet property="resultEmail" destination="F7o-CP-UuI" id="JT0-yX-ev7"/>
                         <outlet property="resultInterval" destination="eK6-hM-LdL" id="3wf-nB-hZT"/>
                         <outlet property="resultUpdate" destination="hIv-iS-KlQ" id="aZg-ib-nZY"/>
+                        <segue destination="6Qb-hT-Gsd" kind="presentation" identifier="ManualSegue" modalPresentationStyle="fullScreen" id="gXO-xy-0NI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -169,6 +186,9 @@
             <point key="canvasLocation" x="936.23188405797111" y="116.51785714285714"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="gXO-xy-0NI"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -45,5 +45,10 @@ class ViewController: UIViewController {
         
         self.present(fvc, animated: true)
     }
+    
+    
+    @IBAction func onManualSegue(_ sender: Any) {
+        self.performSegue(withIdentifier: "ManualSegue", sender: self)
+    }
 }
 
