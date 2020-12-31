@@ -15,12 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if #available(iOS 10.0, *) {
             // 경고창, 배지, 사운드를 사용하는 알림 환경 정보를 생성하고, 사용자 동의 여부 창을 실행
             let notiCenter = UNUserNotificationCenter.current()
+            print("알림권한 물어보기 시작")
             notiCenter.requestAuthorization(options: [.alert, .badge, .sound]){ (didAllow, e) in
                 print("allow result: \(didAllow)")
             }
+            print("알림권한 물어보기 끝")
             notiCenter.delegate = self
         } else {
-            
         }
         
         return true
