@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             notiCenter.requestAuthorization(options: [.alert, .badge, .sound]){ (didAllow, e) in
                 print("allow result: \(didAllow)")
             }
+        
             print("알림권한 물어보기 끝")
             notiCenter.delegate = self
         } else {

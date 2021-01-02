@@ -63,7 +63,6 @@ class ViewController: UIViewController {
         
         alert.addAction(cancel)
         alert.addAction(ok)
-        
         // 텍스트 필드 추가
         alert.addTextField(configurationHandler: { (tf) in
             // 텍스트필드의 속성 설정
@@ -72,7 +71,6 @@ class ViewController: UIViewController {
         })
         self.present(alert, animated: false)
     }
-    
     @IBAction func auth(_ sender: Any) {
         // 메시지 창 관련 객체 정의
         let msg = "로그인"
@@ -89,7 +87,6 @@ class ViewController: UIViewController {
                 self.result.text = "인증에 실패하였습니다"
             }
         }
-        
         // 정의된 액션 버튼 객체를 메시지창에 추가
         alert.addAction(cancel)
         alert.addAction(ok)
