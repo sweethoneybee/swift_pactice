@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         
         // 자동갱신 레이블 생성하고 루트 뷰에 추가
         let lblUpdate = UILabel()
-        lblUpdate.frame = CGRect(x: 30, y: 150, width: 100, height: 30)
+        lblUpdate.frame = CGRect(x: lblEmail.frame.origin.x, y: lblEmail.frame.origin.y + 50, width: 100, height: 30)
         lblUpdate.text = "자동갱신"
         lblUpdate.font = UIFont.systemFont(ofSize: 14)
         
@@ -42,7 +42,7 @@ class ViewController: UIViewController {
         
         // 갱신주기 레이블 생성하고 루트 뷰에 추가
         let lblInterval = UILabel()
-        lblInterval.frame = CGRect(x: 30, y: 200, width: 100, height: 30)
+        lblInterval.frame = CGRect(x: lblEmail.frame.origin.x, y: lblEmail.frame.origin.y + 100, width: 100, height: 30)
         lblInterval.text = "갱신주기"
         lblInterval.font = UIFont.systemFont(ofSize: 14)
         
@@ -50,7 +50,7 @@ class ViewController: UIViewController {
         
         // 이메일 입력을 위한 텍스트 필드를 추가한다
         self.paramEmail = UITextField()
-        self.paramEmail?.frame = CGRect(x: 120, y: 100, width: 220, height: 30)
+        self.paramEmail?.frame = CGRect(x: lblEmail.frame.origin.x + 90, y: lblEmail.frame.origin.y , width: 220, height: 30)
         self.paramEmail?.font = UIFont.systemFont(ofSize: 13)
         self.paramEmail?.borderStyle = .roundedRect
         self.paramEmail?.autocapitalizationType = .none
@@ -61,7 +61,7 @@ class ViewController: UIViewController {
         
         // 스위치 객체를 생성한다
         self.paramUpdate = UISwitch()
-        self.paramUpdate?.frame = CGRect(x: 120, y: 150, width: 50, height: 30)
+        self.paramUpdate?.frame = CGRect(x: lblUpdate.frame.origin.x + 90, y: lblUpdate.frame.origin.y, width: 50, height: 30)
         
         // 스위치가 on 되어있는 상태를 기본값으로 설정한다
         self.paramUpdate?.setOn(true, animated: true)
@@ -75,7 +75,7 @@ class ViewController: UIViewController {
         
         // 갱신주기를 위한 스테퍼 추가
         self.paramInterval = UIStepper()
-        self.paramInterval?.frame = CGRect(x: 120, y: 200, width: 50, height: 30)
+        self.paramInterval?.frame = CGRect(x: lblInterval.frame.origin.x + 90, y: lblInterval.frame.origin.y, width: 50, height: 30)
         self.paramInterval?.minimumValue = 0 // 스테퍼가 가질 수 있는 최소값
         self.paramInterval?.maximumValue = 100 // 스테퍼가 가질 수 있는 최대값
         self.paramInterval?.stepValue = 1 // 스테퍼의 값 변경 단위
@@ -91,7 +91,8 @@ class ViewController: UIViewController {
         // 스위치 객체의 값을 표현할 레이블을 추가한다
         self.txtUpdate = UILabel()
         
-        self.txtUpdate?.frame = CGRect(x: 250, y: 150, width: 100, height: 30)
+        self.txtUpdate?.frame = CGRect(x: (self.paramUpdate?.frame.origin.x ?? 120) + 130 ,
+                                       y: lblUpdate.frame.origin.y, width: 100, height: 30)
         self.txtUpdate?.font = UIFont.systemFont(ofSize: 12)
         self.txtUpdate?.textColor = UIColor.red // 텍스트의 색상
         self.txtUpdate?.text = "갱신함" // 갱신함 or 갱신하지 않음
@@ -103,7 +104,8 @@ class ViewController: UIViewController {
         // 스테퍼의 값을 표현할 레이블을 추가한다
         self.txtInterval = UILabel()
         if let txtIntervalLabel = self.txtInterval {
-            txtIntervalLabel.frame = CGRect(x: 250, y: 200, width: 100, height: 30)
+            txtIntervalLabel.frame = CGRect(x: (self.paramInterval?.frame.origin.x ?? 120) + 130,
+                                            y: lblInterval.frame.origin.y , width: 100, height: 30)
             txtIntervalLabel.font = UIFont.systemFont(ofSize: 12)
             txtIntervalLabel.textColor = UIColor.red
             txtIntervalLabel.text = "0분마다"
