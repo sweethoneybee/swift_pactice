@@ -33,9 +33,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 // 탭 바 아이템 전체를 순회하면서 selectedImage 속성에 이미지를 설정한다
                 for tbItem in tbItems {
                     let image = UIImage(named: "checkmark")?.withRenderingMode(.alwaysOriginal)
-                    
                     tbItem.selectedImage = image
                 }
+                // 외형 프록시 객체를 이용하여 아이템의 타이틀 색상과 폰트 크기를 설정한다
+                let tbItemProxy = UITabBarItem.appearance()
+                tbItemProxy.setTitleTextAttributes([.foregroundColor: UIColor.red], for: .selected)
+                tbItemProxy.setTitleTextAttributes([.foregroundColor: UIColor.gray], for: .disabled)
+                tbItemProxy.setTitleTextAttributes([.font: UIFont.systemFont(ofSize: 15)], for: .normal)
                 
                 // 탭 바 아이템에 타이틀을 설정한다
                 tbItems[0].title = "calendar"
@@ -54,7 +58,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
+        // Release any resources associated with this scene that can be re-created the next time the scene connects.r
         // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
     }
 
