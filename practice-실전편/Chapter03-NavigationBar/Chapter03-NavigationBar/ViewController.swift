@@ -13,7 +13,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // 내비게이션 타이틀 초기화
-        self.initTitleNew()
+        self.initTitleImage()
     }
 
     func initTitleNew() {
@@ -66,6 +66,13 @@ class ViewController: UIViewController {
         let color = UIColor(red: 0.0-2, green: 0.22, blue: 0.49, alpha: 1.0)
         self.navigationController?.navigationBar.barTintColor = color
         
+    }
+    
+    func initTitleImage() {
+        let image = UIImage(named: "swift_logo")
+        let imageV = UIImageView(image: image)
+        
+        self.navigationItem.titleView = imageV
     }
 }
 
