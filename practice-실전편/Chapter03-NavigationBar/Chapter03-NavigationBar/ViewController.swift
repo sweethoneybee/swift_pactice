@@ -13,7 +13,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // 내비게이션 타이틀 초기화
-        self.initTitleImage()
+        self.initTitleInput()
     }
 
     func initTitleNew() {
@@ -68,11 +68,31 @@ class ViewController: UIViewController {
         
     }
     
+    // 타이틀에 이미지를 표시하는 메소드
     func initTitleImage() {
         let image = UIImage(named: "swift_logo")
         let imageV = UIImageView(image: image)
         
         self.navigationItem.titleView = imageV
+    }
+    
+    // 텍스트 필드를 이용하여 타이틀을 구성하는 메소드
+    func initTitleInput() {
+        // 텍스트 필드 객체 생성
+        let tf = UITextField()
+        tf.frame = CGRect(x: 0, y: 0, width: 300, height: 35)
+        tf.backgroundColor = .white // 배경색상을 흰색
+        tf.font = .systemFont(ofSize: 13) // 입력할 글씨 크기를 13픽셀로
+        tf.autocapitalizationType = .none
+        tf.autocorrectionType = .no
+        tf.spellCheckingType = .no
+        tf.keyboardType = .URL // URL 전용 키보드
+        tf.keyboardAppearance = .dark
+        tf.layer.borderWidth = 0.3 // 테두리 경계선 두께
+        tf.layer.borderColor = UIColor(red: 0.60, green: 0.60, blue: 0.60, alpha: 1.0).cgColor
+        
+        // 타이틀 뷰 속성에 대입
+        self.navigationItem.titleView = tf
     }
 }
 
