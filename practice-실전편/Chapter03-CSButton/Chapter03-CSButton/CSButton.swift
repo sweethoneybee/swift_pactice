@@ -50,6 +50,8 @@ class CSButton: UIButton {
             self.layer.cornerRadius = 50 // 50만큼 둥글게 처리
             self.setTitle("Rect Button", for: .normal) // 기본문구설정
         }
+        
+        self.addTarget(self, action: #selector(counting(_:)), for: .touchUpInside)
     }
     
     var style: CSButtonType = .rect {
@@ -71,5 +73,11 @@ class CSButton: UIButton {
                 self.setTitle("Rect Button", for: .normal) // 기본문구설정
             }
         }
+    }
+    
+    // 버튼이 클릭된 횟수를 카운트하여 타이틀에 표시해주는 함수
+    @objc func counting(_ sender: UIButton) {
+        sender.tag = sender.tag + 1
+        sender.setTitle("\(sender.tag) 번째 클릭", for: .normal)
     }
 }
