@@ -13,7 +13,7 @@ class CSTabBarController: UITabBarController {
         
         // 새로운 탭 바 역할을 할 뷰를 위해 기준 좌표와 크기를 정의한다
         let width = self.view.frame.width
-        let height: CGFloat = 50
+        let height: CGFloat = 50 // 기본 탭바의 높이가 50임
         let x: CGFloat =  0
         let y = self.view.frame.height - height
         
