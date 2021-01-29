@@ -24,6 +24,10 @@ class RevealViewController: UIViewController {
             self.view.addSubview(vc.view) // _프론트 컨트롤러의 뷰를 메인 컨트롤러의 서브 뷰로 등록
             // _프론트 컨트롤러에 부모 뷰 컨트롤러가 바뀌었음을 알려준다.
             vc.didMove(toParent: self)
+            
+            // 4. 프론트 컨트롤러의 델리게이트 변수에 참조 정보를 넣어준다
+            let frontVC = vc.viewControllers[0] as? FrontViewContrller
+            frontVC?.delegate = self
         }
     }
     

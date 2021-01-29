@@ -26,10 +26,7 @@
         <!--Side Bar View Controller-->
         <scene sceneID="tvZ-n6-4j3">
             <objects>
-                <tableViewController id="qk7-uD-L4c" customClass="SideBarViewController" customModule="Chapter04_SideBarDIY" customModuleProvider="target" sceneMemberID="viewController">
-                    <string key="storyboardIdentifier" base64-UTF8="YES">
-c3cQX3JlYXI
-</string>
+                <tableViewController storyboardIdentifier="sw_rear" id="qk7-uD-L4c" customClass="SideBarViewController" customModule="Chapter04_SideBarDIY" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="u1B-vt-YuX">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
