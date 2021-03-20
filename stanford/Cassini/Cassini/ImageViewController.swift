@@ -19,10 +19,19 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     
     private func fetchImage() {
         if let url = self.imageURL {
+            self.spinner?.startAnimating()
             DispatchQueue.global(qos: .utility).async {
-                if let imageData = try? Data(contentsOf: url) {
-                    self.image = UIImage(data: imageData)
+                let contentsOfURL = try? Data(contentsOf: url)
+                DispatchQueue.main.async { [weak weakSelf = self] in
+                    if url == weakSelf?.imageURL { // for fine multithreading
+                        if let imageData = contentsOfURL {
+                            weakSelf?.image = UIImage(data: imageData)
+                        } else {
+                            weakSelf?.spinner?.stopAnimating()
+                        }
+                    }
                 }
+                
             }
         }
     }
@@ -50,8 +59,11 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
             self.imageView.image = newValue
             self.imageView.sizeToFit()
             self.scrollView?.contentSize = self.imageView.frame.size
+            self.spinner?.stopAnimating()
         }
     }
+    
+    @IBOutlet weak var spinner: UIActivityIndicatorView?
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)

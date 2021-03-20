@@ -3,6 +3,7 @@
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -21,12 +22,18 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="GD7-DI-Vbs"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="A1d-kB-mmv"/>
                             </scrollView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="l4R-bJ-TbF">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <color key="color" name="AccentColor"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="l4R-bJ-TbF" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="HiD-Qx-gpN"/>
                             <constraint firstItem="dD1-vR-IHC" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="PSY-Re-gU0"/>
                             <constraint firstItem="dD1-vR-IHC" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="YIs-kU-fOR"/>
+                            <constraint firstItem="l4R-bJ-TbF" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="bdl-AV-HgS"/>
                             <constraint firstItem="dD1-vR-IHC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="oln-7y-RJa"/>
                             <constraint firstItem="dD1-vR-IHC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="zTZ-pb-YAy"/>
                         </constraints>
@@ -34,6 +41,7 @@
                     <navigationItem key="navigationItem" id="Jgs-6m-wwj"/>
                     <connections>
                         <outlet property="scrollView" destination="dD1-vR-IHC" id="cnm-lE-Ckb"/>
+                        <outlet property="spinner" destination="l4R-bJ-TbF" id="TLP-EI-te8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -56,7 +64,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                         <state key="normal" title="Earth"/>
                                         <connections>
-                                            <segue destination="CtV-jh-R3M" kind="showDetail" identifier="Show Image" id="b39-ge-AQh"/>
+                                            <action selector="showImage:" destination="7eV-mm-J1r" eventType="touchUpInside" id="ahF-w7-lPg"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4bP-Ir-NVW">
@@ -64,7 +72,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                         <state key="normal" title="Cassini"/>
                                         <connections>
-                                            <segue destination="CtV-jh-R3M" kind="showDetail" identifier="Show Image" id="Itj-3e-hpF"/>
+                                            <action selector="showImage:" destination="7eV-mm-J1r" eventType="touchUpInside" id="agb-u9-mwu"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qTz-up-Ona">
@@ -72,7 +80,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                         <state key="normal" title="Saturn"/>
                                         <connections>
-                                            <segue destination="CtV-jh-R3M" kind="showDetail" identifier="Show Image" id="cF0-gm-khd"/>
+                                            <action selector="showImage:" destination="7eV-mm-J1r" eventType="touchUpInside" id="BN8-gJ-jmb"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -87,6 +95,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Cassini" id="p6u-Wh-RIL"/>
+                    <connections>
+                        <segue destination="CtV-jh-R3M" kind="show" identifier="Show Image" id="h64-u4-wNY"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="86C-bv-eCg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -95,20 +106,19 @@
         <!--Split View Controller-->
         <scene sceneID="vSy-Cu-fTV">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="mPL-5v-25n" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <splitViewController allowDoubleColumnStyle="YES" id="9c7-fx-Q0Y" sceneMemberID="viewController">
                     <connections>
                         <segue destination="J76-kY-6re" kind="relationship" relationship="masterViewController" id="Vmh-25-THl"/>
                         <segue destination="CtV-jh-R3M" kind="relationship" relationship="detailViewController" id="ycw-Ua-wRa"/>
                     </connections>
                 </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mPL-5v-25n" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2035" y="263"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="HB6-dJ-Fgb">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jf5-8b-uB8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="J76-kY-6re" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ezU-4o-NI1">
@@ -120,6 +130,7 @@
                         <segue destination="7eV-mm-J1r" kind="relationship" relationship="rootViewController" id="Qh8-mQ-JgW"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jf5-8b-uB8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1023.2" y="-99.400299850074973"/>
         </scene>
@@ -128,6 +139,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="CtV-jh-R3M" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="zjk-Qh-GBI"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ukn-qY-deK">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -143,9 +155,12 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="cF0-gm-khd"/>
+        <segue reference="h64-u4-wNY"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <namedColor name="AccentColor">
+            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
