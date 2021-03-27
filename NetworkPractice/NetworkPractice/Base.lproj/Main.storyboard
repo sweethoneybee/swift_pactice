@@ -28,7 +28,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <connections>
-                        <outlet property="article" destination="jPm-zW-HRt" id="Z8n-zp-KW7"/>
+                        <outlet property="articleLabel" destination="jPm-zW-HRt" id="Z8n-zp-KW7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
