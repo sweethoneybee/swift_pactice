@@ -25,12 +25,11 @@ class ArticleListTableViewController: UITableViewController {
     @IBAction func getArticleList() {
         // TODO:- 백그라운드에서 돌렸는데, UI가 정상적으로 수정되는 이유 찾아보기(메인 큐 밖)
         // 아마 AF가 메인큐에서 실행되는 듯? 편의상 이렇게 구현했나..?
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            DispatchQueue.main.async {
-                self?.isLoading = true;
-            }
-            AF.request(self?.url ?? "").responseJSON { response in
-                self?.isLoading = false
+        // 답: AF는 비동기로 요청을 날리기 때문에, DispatchQueue로 감쌀 필요가 없음
+        // 그리고 기본적으로 response는 main queue에서 처리됨.
+            self.isLoading = true;
+            AF.request(self.url).responseJSON { response in
+                self.isLoading = false
                 
                 // response.data는 Data?
                 // response.value 는 response.result의 associative value이다. Any 타입이니
@@ -48,8 +47,8 @@ class ArticleListTableViewController: UITableViewController {
                                 print("string fail")
                             }
                         }
-                        self?.articleList = articles
-                        self?.tableView.reloadData()
+                        self.articleList = articles
+                        self.tableView.reloadData()
                     } else {
                         print("실패")
                     }
@@ -58,10 +57,18 @@ class ArticleListTableViewController: UITableViewController {
                     print("error!")
                 }
             }
-        }
-        
     }
     
+    @IBAction func addDummy(_ sender: Any) {
+        let dummyArticle = Article(id: "12314", featured: true, title: "더미타이틀", url: "dummy", imageUrl: "dummy", newsSite: "dummy", summary: "이것은 더미 디테일이고 이 문장은 의미가 없습니다", publishedAt: "dummy", launches: [Launch(id: "dummy", provider: "dummy")], events: [Event(id: "dummy", provide: "dummy")])
+        
+        self.articleList.append(dummyArticle)
+        self.articleList.remove(at: 0)
+        self.tableView.performBatchUpdates({
+            self.tableView.insertRows(at: [IndexPath(row: articleList.count - 1, section: 0)], with: .automatic)
+            self.tableView.deleteRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        }, completion: nil)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -85,12 +92,9 @@ class ArticleListTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath)
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell") else {
-//            print("실패")
-//            return UITableViewCell()
-//        }
         let article = self.articleList[indexPath.row]
-        cell.largeContentTitle = article.title
+        
+        cell.textLabel?.text = article.title
         cell.detailTextLabel?.text = article.summary
         
 

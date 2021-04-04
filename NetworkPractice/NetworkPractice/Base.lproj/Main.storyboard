@@ -108,6 +108,14 @@
                                         <action selector="getArticleList" destination="mFD-rg-Xto" eventType="touchUpInside" id="bvI-UT-uvm"/>
                                     </connections>
                                 </button>
+                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sE4-gB-kAQ">
+                                    <rect key="frame" x="295" y="6" width="82" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <state key="normal" title="더미 추가하기"/>
+                                    <connections>
+                                        <action selector="addDummy:" destination="mFD-rg-Xto" eventType="touchUpInside" id="qQ5-Vj-DVk"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
