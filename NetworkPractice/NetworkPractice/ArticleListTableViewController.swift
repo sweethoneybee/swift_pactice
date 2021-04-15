@@ -8,6 +8,41 @@
 import UIKit
 import Alamofire
 
+
+import SwiftUI
+
+ 
+
+struct ContentView: View {
+
+    var body: some View {
+        Button(action: {
+            print("Hello World!")
+        }) {
+            Text("Button")
+                .foregroundColor(.red)
+        }
+
+    }
+
+}
+class temp: UIViewController {
+    override func viewDidLoad() {
+        
+        let button = UIButton()
+        button.setTitle("Button", for: .normal)
+        button.setTitleColor(.red, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false;
+        button.addTarget(self, action: #selector(printText(_:)), for: .touchUpInside)
+        
+        _ = button.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        _ = button.centerYAnchor.constraint(equalTo: view.centerYAnchor);
+    }
+    
+    @objc func printText(_ sender: Any) {
+        print("Hello World")
+    }
+}
 class ArticleListTableViewController: UITableViewController {
     private var articleList = [Article]()
 
