@@ -19,7 +19,7 @@ class ViewController: UIViewController {
                                                name: UIContentSizeCategory.didChangeNotification,
                                                object: nil)
     }
-    
+
     @objc func adjustButtonDynamicType() {
         self.buttons.forEach { (button) in
             button.titleLabel?.adjustsFontForContentSizeCategory = true;
