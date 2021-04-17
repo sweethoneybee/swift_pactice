@@ -25,8 +25,9 @@ class ViewController: UIViewController {
                                                object: nil,
                                                queue: .main,
                                                using: { noti in
-                                                self.tableView.beginUpdates()
-                                                self.tableView.endUpdates()    
+//                                                self.tableView.beginUpdates()
+//                                                self.tableView.endUpdates()
+                                                self.tableView.performBatchUpdates(nil)
                                                })
     }
 
