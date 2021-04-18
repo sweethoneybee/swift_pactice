@@ -21,9 +21,17 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button" image="paperplane.fill" catalog="system"/>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IS2-Os-YCJ" customClass="MenuButton" customModule="AutoLayout_FloatingButtons" customModuleProvider="target">
+                                <rect key="frame" x="44" y="807" width="58.5" height="41"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="IS2-Os-YCJ" secondAttribute="bottom" constant="14" id="r3o-pR-59v"/>
+                            <constraint firstItem="IS2-Os-YCJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="44" id="x9o-jk-JgN"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -31,6 +39,11 @@
             <point key="canvasLocation" x="28.985507246376812" y="73.660714285714278"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="IS2-Os-YCJ">
+            <size key="intrinsicContentSize" width="10" height="10"/>
+        </designable>
+    </designables>
     <resources>
         <image name="paperplane.fill" catalog="system" width="128" height="118"/>
         <systemColor name="systemBackgroundColor">

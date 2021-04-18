@@ -7,6 +7,7 @@
 
 import UIKit
 
+@IBDesignable
 class MenuButton: UIView {
     
     private var menuButton: UIButton!
@@ -20,9 +21,15 @@ class MenuButton: UIView {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+        
+        self.addMenuButton()
+        self.addMenuStack()
     }
-    
+ 
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: 10, height: 10)
+    }
 }
 
 extension MenuButton {
