@@ -1,0 +1,9 @@
+platform :ios, '12.0'
+
+target 'TableViewRefresh' do
+  use_frameworks!
+  
+  pod 'KakaoSDK', '~> 2.0.0-beta.6'
+  pod 'Alamofire'
+
+end

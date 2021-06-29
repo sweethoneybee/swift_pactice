@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import KakaoSDKAuth
 
 class ViewController: UIViewController {
 
@@ -16,6 +17,19 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureRefreshControl()
+    }
+    
+    @IBAction func onLoginButton(_ sender: Any) {
+        if AuthApi.isKakaoTalkLoginAvailable() {
+            AuthApi.shared.loginWithKakaoTalk { token, error in
+                if let error = error {
+                    print("error: \(error)")
+                }
+                else {
+                    print("token: \(String(describing: token))")
+                }
+            }
+        }
     }
 }
 

@@ -25,12 +25,22 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oUJ-dR-BrK">
+                                        <rect key="frame" x="364" y="25" width="39" height="30"/>
+                                        <state key="normal" title="로그인"/>
+                                        <connections>
+                                            <action selector="onLoginButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uTh-ZK-IgF"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="oUJ-dR-BrK" secondAttribute="trailing" constant="11" id="9O9-8t-RMP"/>
                                     <constraint firstItem="mIo-C7-A2k" firstAttribute="centerY" secondItem="MFm-q4-rF9" secondAttribute="centerY" id="ELU-c6-VJ9"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="mIo-C7-A2k" secondAttribute="trailing" id="Xr3-he-JCd"/>
+                                    <constraint firstItem="oUJ-dR-BrK" firstAttribute="centerY" secondItem="MFm-q4-rF9" secondAttribute="centerY" id="ce6-bR-iCE"/>
                                     <constraint firstItem="mIo-C7-A2k" firstAttribute="leading" secondItem="MFm-q4-rF9" secondAttribute="leading" constant="28" id="nYS-NE-7JZ"/>
+                                    <constraint firstItem="oUJ-dR-BrK" firstAttribute="leading" relation="lessThanOrEqual" secondItem="mIo-C7-A2k" secondAttribute="trailing" constant="135" id="uYx-Gg-T80"/>
                                     <constraint firstAttribute="height" constant="80" id="zN8-DB-Mg6"/>
                                 </constraints>
                             </view>

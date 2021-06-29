@@ -4,6 +4,10 @@
 
 ## Custom
 stanford/FaceIt
+stanford/Cassini
+TableViewRefresh/TableViewRefresh/Info.plist 
+TableViewRefresh/TableViewRefresh/Keys.swift
+TableViewRefresh/Pods
 
 ## User settings
 xcuserdata/
