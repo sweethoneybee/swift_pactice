@@ -9,7 +9,7 @@ import UIKit
 import KakaoSDKAuth
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet weak var tableView: UITableView!
     var users: [User] = User.makeMockData()
     var cachedImage = [URL: UIImage]()
@@ -17,6 +17,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureRefreshControl()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleRefreshControl), name: .refreshNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     @IBAction func onLoginButton(_ sender: Any) {
@@ -31,6 +37,11 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func onSecondVCButton(_ sender: Any) {
+        let vc = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "SecondViewController")
+        self.present(vc, animated: true)
+    }
 }
 
 extension ViewController {
@@ -40,12 +51,11 @@ extension ViewController {
     }
     
     @objc func handleRefreshControl() {
+        print("handleRefreshControl 호출")
         self.users.shuffle()
         DispatchQueue.main.async {
-            Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { timer in
-                self.tableView.refreshControl?.endRefreshing()
-                self.tableView.reloadData()
-            }
+            self.tableView.refreshControl?.endRefreshing()
+            self.tableView.reloadData()
         }
     }
 }

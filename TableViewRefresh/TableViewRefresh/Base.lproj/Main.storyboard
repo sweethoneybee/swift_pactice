@@ -45,7 +45,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="W33-Ye-Ozc">
-                                <rect key="frame" x="0.0" y="124" width="414" height="738"/>
+                                <rect key="frame" x="0.0" y="124" width="414" height="665"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="78" id="65s-Or-1Dx" customClass="UserTableViewCell" customModule="TableViewRefresh" customModuleProvider="target">
@@ -99,17 +99,37 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="w7t-zr-HZg"/>
                                 </connections>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zs1-3C-zWl">
+                                <rect key="frame" x="0.0" y="797" width="414" height="65"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tl5-TI-WPK">
+                                        <rect key="frame" x="162" y="17" width="91" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="세컨드뷰컨으로"/>
+                                        <connections>
+                                            <action selector="onSecondVCButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ige-x3-lDz"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="65" id="Y4j-lp-rTb"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Zs1-3C-zWl" secondAttribute="trailing" id="8jQ-gi-aKr"/>
                             <constraint firstItem="W33-Ye-Ozc" firstAttribute="top" secondItem="MFm-q4-rF9" secondAttribute="bottom" id="ALt-Jy-WbC"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="MFm-q4-rF9" secondAttribute="trailing" id="HPt-h5-Kph"/>
+                            <constraint firstItem="Zs1-3C-zWl" firstAttribute="top" secondItem="W33-Ye-Ozc" secondAttribute="bottom" constant="8" symbolic="YES" id="HVa-3R-POW"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="W33-Ye-Ozc" secondAttribute="trailing" id="QYp-kx-vek"/>
                             <constraint firstItem="MFm-q4-rF9" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="QbJ-eo-hM0"/>
                             <constraint firstItem="MFm-q4-rF9" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="iJD-JG-KrF"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="W33-Ye-Ozc" secondAttribute="bottom" id="o5B-GF-eZr"/>
                             <constraint firstItem="W33-Ye-Ozc" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="oh1-Xj-xjA"/>
+                            <constraint firstItem="Zs1-3C-zWl" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="sLm-rO-e5v"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Zs1-3C-zWl" secondAttribute="bottom" id="u8t-5c-xH3"/>
                         </constraints>
                     </view>
                     <connections>
@@ -119,6 +139,31 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="28.985507246376812" y="88.392857142857139"/>
+        </scene>
+        <!--Second View Controller-->
+        <scene sceneID="JdE-kK-ZKu">
+            <objects>
+                <viewController storyboardIdentifier="SecondViewController" id="hFG-Jo-NiC" customClass="SecondViewController" customModule="TableViewRefresh" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="hBb-Lf-7mr">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2A9-3E-2Wj">
+                                <rect key="frame" x="179" y="316" width="56" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="노티 발급"/>
+                                <connections>
+                                    <action selector="onNotiButton:" destination="hFG-Jo-NiC" eventType="touchUpInside" id="qYh-8v-6hc"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="71f-IV-vmm"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BV0-Ue-4Yg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="846" y="95"/>
         </scene>
     </scenes>
     <resources>
