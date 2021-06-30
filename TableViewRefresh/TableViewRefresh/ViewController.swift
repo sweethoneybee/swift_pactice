@@ -7,6 +7,7 @@
 
 import UIKit
 import KakaoSDKAuth
+import Alamofire
 
 class ViewController: UIViewController {
     
@@ -75,16 +76,15 @@ extension ViewController: UITableViewDataSource {
         cell.nameLabel.text = user.name
         cell.descriptionLabel.text = user.description
         
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let self = self else { return }
-            
-            let key = user.profileImageURL
-            if let image = self.cachedImage[key] {
-                DispatchQueue.main.async {
-                    cell.profileImageView.image = image
-                }
-            } else {
-                let data = try! Data(contentsOf: key)
+        let key = user.profileImageURL
+        if let image = self.cachedImage[key] {
+            DispatchQueue.main.async {
+                cell.profileImageView.image = image
+            }
+        }
+        else {
+            AF.request(key).response { [weak self] response in
+                guard let self = self, let data = response.data else { return }
                 DispatchQueue.main.async {
                     let image = UIImage(data: data)
                     self.cachedImage[key] = image
@@ -92,6 +92,22 @@ extension ViewController: UITableViewDataSource {
                 }
             }
         }
+
+//        let key = user.profileImageURL
+//        if let image = self.cachedImage[key] {
+//                cell.profileImageView.image = image
+//        }
+//        else {
+//            DispatchQueue.global(qos: .background).async { [weak self] in
+//                guard let self = self else { return }
+//                let data = try! Data(contentsOf: key)
+//                DispatchQueue.main.async {
+//                    let image = UIImage(data: data)
+//                    self.cachedImage[key] = image
+//                    cell.profileImageView.image = UIImage(data: data)
+//                }
+//            }
+//        }
         
         return cell
     }
