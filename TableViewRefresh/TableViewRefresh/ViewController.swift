@@ -8,12 +8,30 @@
 import UIKit
 import KakaoSDKAuth
 import Alamofire
+import CoreData
 
 class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    var users: [User] = User.makeMockData()
-    var cachedImage = [URL: UIImage]()
+    
+    var users: [User]! = User.fetchAll(context: DBManager.shared.context) ?? [User]()
+    
+    private var cachedImage = [URL: UIImage]()
+    lazy private var fetchedUsersController: NSFetchedResultsController<NSFetchRequestResult> = {
+        var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>!
+        
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = User.fetchRequest()
+        fetchRequest.entity = NSEntityDescription.entity(forEntityName: "User", in: DBManager.shared.context)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+//        fetchRequest.predicate = NSPredicate(format: "", <#T##args: CVarArg...##CVarArg#>)
+        fetchRequest.predicate = NSPredicate()
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                              managedObjectContext: DBManager.shared.context,
+                                                              sectionNameKeyPath: nil,
+                                                              cacheName: nil)
+        fetchedResultsController.delegate = self
+        return fetchedResultsController
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +61,10 @@ class ViewController: UIViewController {
         let vc = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(identifier: "SecondViewController")
         self.present(vc, animated: true)
     }
+    
+    @IBAction func onDeleteAllButton(_ sender: Any) {
+        DBManager.shared.deleteAll()
+    }
 }
 
 extension ViewController {
@@ -53,7 +75,8 @@ extension ViewController {
     
     @objc func handleRefreshControl() {
         print("handleRefreshControl 호출")
-        self.users.shuffle()
+//        self.users.shuffle()
+        self.users = User.fetchAll(context: DBManager.shared.context)
         DispatchQueue.main.async {
             self.tableView.refreshControl?.endRefreshing()
             self.tableView.reloadData()
@@ -63,7 +86,7 @@ extension ViewController {
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count
+        return users.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -74,9 +97,9 @@ extension ViewController: UITableViewDataSource {
         
         let user = users[indexPath.row]
         cell.nameLabel.text = user.name
-        cell.descriptionLabel.text = user.description
+        cell.descriptionLabel.text = user.desc
         
-        let key = user.profileImageURL
+        let key = URL(string: user.profileImageUrl!)!
         if let image = self.cachedImage[key] {
             DispatchQueue.main.async {
                 cell.profileImageView.image = image
@@ -120,3 +143,10 @@ extension ViewController: UITableViewDelegate {
 }
 
 
+extension ViewController: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("델리게이트 호출")
+        self.users = User.fetchAll(context: DBManager.shared.context)
+        tableView.reloadData()
+    }
+}

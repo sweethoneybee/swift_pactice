@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/aratishappy/sqlite/swift_practice/TableViewRefresh/TableViewRefresh/User+CoreDataClass.swift">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/aratishappy/sqlite/swift_practice/TableViewRefresh/TableViewRefresh/User+CoreDataProperties.swift">
+   </FileRef>
+   <FileRef
       location = "group:TableViewRefresh.xcodeproj">
    </FileRef>
    <FileRef
