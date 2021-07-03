@@ -103,7 +103,7 @@
                                 <rect key="frame" x="0.0" y="797" width="414" height="65"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tl5-TI-WPK">
-                                        <rect key="frame" x="109" y="17" width="91" height="30"/>
+                                        <rect key="frame" x="8" y="17" width="91" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" title="세컨드뷰컨으로"/>
                                         <connections>
@@ -111,11 +111,19 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V39-RM-88A">
-                                        <rect key="frame" x="280" y="17" width="52" height="30"/>
+                                        <rect key="frame" x="181" y="17" width="52" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" title="모두삭제"/>
                                         <connections>
                                             <action selector="onDeleteAllButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="AUa-Mk-TyA"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AaA-le-3eW">
+                                        <rect key="frame" x="301" y="17" width="86" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="유저 하나 추가"/>
+                                        <connections>
+                                            <action selector="onAddUserButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hC6-hs-Mcm"/>
                                         </connections>
                                     </button>
                                 </subviews>

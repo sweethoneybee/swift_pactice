@@ -28,7 +28,7 @@ class DBManager {
     }
 
     @discardableResult
-    func insertPerson(person: Person) -> Bool {
+    func insertPerson(person: Person? = nil) -> Bool {
         guard let entity = NSEntityDescription.entity(forEntityName: "User", in: self.context) else { return false }
         guard let count = try? self.context.count(for: User.fetchRequest()) else { return false }
         
@@ -37,10 +37,10 @@ class DBManager {
         managedObject.setValue(ApiProvider.baseUrl + "\(count + 1).jpg", forKey: "profileImageUrl")
         managedObject.setValue("이것은 설명입니다. 길게 적지 않을 꺼야잉", forKey: "desc")
         managedObject.setValue("이름 \(count + 1)", forKey: "name")
+        managedObject.setValue(count + 1, forKey: "id")
         
         do {
             try self.context.save()
-            print("insert 성공")
             return true
         } catch {
             print(error.localizedDescription)
@@ -55,7 +55,6 @@ class DBManager {
         
         do {
             try self.context.execute(delete)
-            print("전체 삭제 성공")
             return true
         } catch {
             print(error.localizedDescription)

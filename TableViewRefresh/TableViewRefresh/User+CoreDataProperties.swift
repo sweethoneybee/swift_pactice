@@ -19,5 +19,6 @@ extension User {
     @NSManaged public var desc: String?
     @NSManaged public var name: String?
     @NSManaged public var profileImageUrl: String?
+    @NSManaged public var id: Int64
 
 }
