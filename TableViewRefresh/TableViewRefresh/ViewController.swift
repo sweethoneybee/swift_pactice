@@ -33,9 +33,25 @@ class ViewController: UIViewController {
         try? fetchedUsersController.performFetch()
         NotificationCenter.default.addObserver(self, selector: #selector(handleRefreshControl), name: .refreshNotification, object: nil)
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        if tableView?.refreshControl?.isRefreshing == false && tableView.contentOffset.y < 0 {
+            tableView.contentOffset = .zero
+        }
+    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+
+    private func configureRefreshControl() {
+        tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
+    }
+    
+    @objc func handleRefreshControl() {
+        reloadData()
+        self.tableView.refreshControl?.endRefreshing()
     }
     
     // MARK: - Interface Builder
@@ -73,20 +89,6 @@ class ViewController: UIViewController {
         self.tableView.reloadData()
     }
 }
-
-// MARK: - Refresh Control
-extension ViewController {
-    private func configureRefreshControl() {
-        tableView.refreshControl = UIRefreshControl()
-        tableView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
-    }
-    
-    @objc func handleRefreshControl() {
-        reloadData()
-        self.tableView.refreshControl?.endRefreshing()
-    }
-}
-
 
 // MARK: - UITableViewDataSource
 extension ViewController: UITableViewDataSource {

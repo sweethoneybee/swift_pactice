@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="jFX-Q1-hKX">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--메인-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="TableViewRefresh" customModuleProvider="target" sceneMemberID="viewController">
@@ -45,7 +45,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="W33-Ye-Ozc">
-                                <rect key="frame" x="0.0" y="124" width="414" height="665"/>
+                                <rect key="frame" x="0.0" y="124" width="414" height="616"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="78" id="65s-Or-1Dx" customClass="UserTableViewCell" customModule="TableViewRefresh" customModuleProvider="target">
@@ -100,7 +100,7 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zs1-3C-zWl">
-                                <rect key="frame" x="0.0" y="797" width="414" height="65"/>
+                                <rect key="frame" x="0.0" y="748" width="414" height="65"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tl5-TI-WPK">
                                         <rect key="frame" x="8" y="17" width="91" height="30"/>
@@ -148,13 +148,14 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Zs1-3C-zWl" secondAttribute="bottom" id="u8t-5c-xH3"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="메인" id="UUm-En-zqB"/>
                     <connections>
                         <outlet property="tableView" destination="W33-Ye-Ozc" id="isc-54-Kh0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="28.985507246376812" y="88.392857142857139"/>
+            <point key="canvasLocation" x="1039" y="-179"/>
         </scene>
         <!--Second View Controller-->
         <scene sceneID="JdE-kK-ZKu">
@@ -187,7 +188,41 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BV0-Ue-4Yg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="846" y="95"/>
+            <point key="canvasLocation" x="1903" y="-179"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="DVL-HA-5sD">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="jFX-Q1-hKX" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="qSl-9g-Tt1">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="ZZk-iI-BHU"/>
+                        <segue destination="iuT-Sf-Adr" kind="relationship" relationship="viewControllers" id="Jgh-jf-ZRA"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OZv-Ju-sjs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="28.985507246376812" y="88.392857142857139"/>
+        </scene>
+        <!--두번째탭-->
+        <scene sceneID="tOn-rs-slF">
+            <objects>
+                <viewController id="iuT-Sf-Adr" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="BfB-kz-wV1">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="7EZ-Z8-1Wd"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="두번째탭" id="hTA-HY-3yp"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Vzr-gn-MNJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1038" y="612"/>
         </scene>
     </scenes>
     <resources>
