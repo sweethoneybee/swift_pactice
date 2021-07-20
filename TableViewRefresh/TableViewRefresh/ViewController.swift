@@ -11,7 +11,8 @@ import Alamofire
 import CoreData
 
 class ViewController: UIViewController {
-    
+
+    private var isRefreshing = false
     private var cachedImage = [URL: UIImage]()
     lazy private var fetchedUsersController: NSFetchedResultsController<User> = {
         let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
@@ -33,12 +34,6 @@ class ViewController: UIViewController {
         try? fetchedUsersController.performFetch()
         NotificationCenter.default.addObserver(self, selector: #selector(handleRefreshControl), name: .refreshNotification, object: nil)
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        if tableView?.refreshControl?.isRefreshing == false && tableView.contentOffset.y < 0 {
-            tableView.contentOffset = .zero
-        }
-    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -46,12 +41,18 @@ class ViewController: UIViewController {
 
     private func configureRefreshControl() {
         tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.transform = CGAffineTransform(scaleX: 0.75, y: 0.75)
         tableView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
     }
     
     @objc func handleRefreshControl() {
+        print("리프리세 시작")
         reloadData()
-        self.tableView.refreshControl?.endRefreshing()
+        Timer.scheduledTimer(withTimeInterval: TimeInterval(0.1), repeats: false) { [weak self] _ in
+            self?.tableView?.refreshControl?.endRefreshing()
+            print("타이머 호출!")
+        }
+        print("리프리세 끝")
     }
     
     // MARK: - Interface Builder
