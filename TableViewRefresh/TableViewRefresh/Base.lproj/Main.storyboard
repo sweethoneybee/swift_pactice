@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--메인-->
+        <!--Item-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="TableViewRefresh" customModuleProvider="target" sceneMemberID="viewController">
@@ -148,7 +148,8 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Zs1-3C-zWl" secondAttribute="bottom" id="u8t-5c-xH3"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="메인" id="UUm-En-zqB"/>
+                    <tabBarItem key="tabBarItem" title="Item" image="person.fill" catalog="system" id="4J1-Z3-1zG"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="W33-Ye-Ozc" id="isc-54-Kh0"/>
                     </connections>
@@ -196,6 +197,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="jFX-Q1-hKX" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="qSl-9g-Tt1">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
@@ -208,7 +210,7 @@
             </objects>
             <point key="canvasLocation" x="28.985507246376812" y="88.392857142857139"/>
         </scene>
-        <!--두번째탭-->
+        <!--Item-->
         <scene sceneID="tOn-rs-slF">
             <objects>
                 <viewController id="iuT-Sf-Adr" sceneMemberID="viewController">
@@ -218,7 +220,8 @@
                         <viewLayoutGuide key="safeArea" id="7EZ-Z8-1Wd"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="두번째탭" id="hTA-HY-3yp"/>
+                    <tabBarItem key="tabBarItem" title="Item" image="lasso" catalog="system" id="HIr-bc-vCl"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vzr-gn-MNJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -226,7 +229,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="lasso" catalog="system" width="128" height="118"/>
         <image name="person" width="128" height="128"/>
+        <image name="person.fill" catalog="system" width="128" height="120"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
