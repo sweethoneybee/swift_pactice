@@ -144,14 +144,24 @@ extension ViewController: NSFetchedResultsControllerDelegate {
         reloadData()
     }
 
-//    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-//        print("didChange at indexPath 델리게이트 호출")
-//
-//        switch type {
-//        case .insert:
-//            tableView.insertRows(at: [newIndexPath!], with: .automatic)
-//        default:
-//            break
-//        }
-//    }
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        print("didChange at indexPath 델리게이트 호출")
+
+        switch type {
+        case .insert:
+            tableView.insertRows(at: [newIndexPath!], with: .automatic)
+        default:
+            break
+        }
+        
+        tableView.scrollToRow(at: newIndexPath!, at: .bottom, animated: true)
+        tableView.visibleCells.forEach { cell in
+            guard let cell = cell as? UserTableViewCell, let newIndexPath = newIndexPath,
+                  let newCell = tableView.cellForRow(at: newIndexPath) as? UserTableViewCell else { return }
+            
+            if cell.nameLabel.text == newCell.nameLabel.text {
+                print("보였다! 셀의 실!")
+            }
+        }
+    }
 }
