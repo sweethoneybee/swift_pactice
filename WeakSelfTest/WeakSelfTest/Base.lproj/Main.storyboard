@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="08H-Ch-LK3">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--First View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="FirstViewController" customModule="WeakSelfTest" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IFP-ab-Lxg">
+                                <rect key="frame" x="179" y="460" width="56" height="30"/>
+                                <state key="normal" title="뷰컨 푸시"/>
+                                <connections>
+                                    <segue destination="poL-2v-hNR" kind="show" id="u0g-wJ-DmZ"/>
+                                </connections>
+                            </button>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="DEj-2F-f5d">
+                                <rect key="frame" x="62" y="270" width="290" height="128"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="4rG-Mb-Tag"/>
+                                    <constraint firstAttribute="width" constant="290" id="8rx-45-vjN"/>
+                                </constraints>
+                                <string key="text">1. 뷰컨 푸시로 새로운 뷰컨을 만든다                     2. 10초 타이머 누른다                                       3. 백으로 나와서 뷰컨을 해제한다                       4. 다시 뷰컨 푸시로 들어간다                             5. 출력되는 결과물로 뷰컨이 살아있는지 확인한다. </string>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="IFP-ab-Lxg" firstAttribute="top" secondItem="DEj-2F-f5d" secondAttribute="bottom" constant="62" id="3hr-zU-Sk9"/>
+                            <constraint firstItem="IFP-ab-Lxg" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="9Lp-I6-uUl"/>
+                            <constraint firstItem="IFP-ab-Lxg" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="AFJ-Jy-uLs"/>
+                            <constraint firstItem="DEj-2F-f5d" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="oQw-3c-pco"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="MMN-7s-HOO"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="939.13043478260875" y="88.392857142857139"/>
+        </scene>
+        <!--Second View Controller-->
+        <scene sceneID="0Te-z8-xUZ">
+            <objects>
+                <viewController id="poL-2v-hNR" customClass="SecondViewController" customModule="WeakSelfTest" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="80e-T0-z0S">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yJO-lX-mJv">
+                                <rect key="frame" x="158" y="417" width="100" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="5초 타이머 시작!"/>
+                                <connections>
+                                    <action selector="onTimerButton:" destination="poL-2v-hNR" eventType="touchUpInside" id="PiC-VD-xo4"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Wmd-Wt-GG9"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="iG1-R2-C3K"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NTo-0k-tNI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1921" y="104"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Cpb-pJ-Mkh">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="08H-Ch-LK3" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="WAA-Wh-ayb">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="RBy-eo-7dN"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Yfv-ed-TPW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="28.985507246376812" y="88.392857142857139"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
