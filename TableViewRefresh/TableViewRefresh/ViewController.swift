@@ -48,11 +48,16 @@ class ViewController: UIViewController {
     @objc func handleRefreshControl() {
         print("리프리세 시작")
         reloadData()
-        Timer.scheduledTimer(withTimeInterval: TimeInterval(0.1), repeats: false) { [weak self] _ in
-            self?.tableView?.refreshControl?.endRefreshing()
-            print("타이머 호출!")
-        }
-        print("리프리세 끝")
+        endRefreshing()
+//        Timer.scheduledTimer(withTimeInterval: TimeInterval(0.1), repeats: false) { [weak self] _ in
+//            self?.tableView?.refreshControl?.endRefreshing()
+//            print("타이머 호출!")
+//        }
+//        print("리프리세 끝")
+    }
+    
+    @objc func endRefreshing() {
+        self.tableView.refreshControl?.perform(#selector(UIRefreshControl.endRefreshing), with: nil, afterDelay: 0.1)
     }
     
     // MARK: - Interface Builder
