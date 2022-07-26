@@ -70,6 +70,101 @@ struct로 configuration space를 나타내는 건 String으로 나타내는 것�
 이제는 makeBallon을 호출할 때 캐시 hit이 되면 더이상 heap allocation을 유발하지 않음. 왜냐하면 이런 구조체형태의 Attributes는 heap allocation을 필요로 하지 않기 때문. 걍 stack에 할당됨. 그래서 훨씬 더 안전하고, 더 빠르다고 할 수 있음.
 
 ## Reference counting
+Swift가 힙에 있는 메모리를 해제할 때 안전한지 아닌지를 아는 방법은 reference counting 이다(힙에 있는 어떤 인스턴스든 간에 레퍼런스의 개수를 세고 있음). **이 count는 인스턴스 자체에 유지한다.** 참조를 추가하거나 제거하면 카운팅을 증가 or 감소시키고, count가 0이되면 힙에서 안전하게 제거할 수 있음을 스위프트가 알게 됨.
+
+여기서 명심해야 할 점은, 레퍼런스 카운팅을 증가 or 감소 시키는 것은 매우 자주 있는 operation이고, 여기에는 단순히 integer를 증가시키고 감소시키는 것 이상의 일들이 있다는 점이다.
+
+**첫 째는 증가 or 감소를 실행시키기 위해 몇 가지 레벨의 간접참조(couple levels of indirection)가 필요하다는 것. 하지만 더 중요한 것은, Heap allocation 처럼, Thread safety를 고려해야한다는 점. 왜냐하면 references(카운팅이 아님을 유의)는 어떤 heap instance에든 간에 멀티 스레드 환경에서 동시에 추가되거나 제거될 수 있어서 그래서 실제로 아토믹하게 reference count를 증가시키고 감소시켜야 한다.** 
+
+```swift
+// Reference Counting
+// Class
+
+class Point {
+	var x, y: Double
+	func draw() { ... }
+}
+
+let point1 = Point(x: 0, y: 0)
+let point2 = point1
+point2.x = 5
+// use `point1`
+// use `point2`
+```
+
+```swift
+// Reference Counting
+// Class (generated code)
+
+class Point {
+	var refCount: Int // 추가됨
+	var x, y: Double
+	func draw() { ... }
+}
+
+let point1 = Point(x: 0, y: 0)
+let point2 = point1
+retain(point2) // 추가됨
+point2.x = 5
+// use `point1`
+release(point1) // 추가됨
+// use `point2` 
+release(point2) // 추가됨
+```
+
+두 번째 코드는 스위프트가 생성해주는 코드라고 보면 됨(이해를 위해 좀 제네럴하게 만들어둔 듯 함). retain, release 둘다 아토믹하게 reference count를 증가 or 감소 시킨다.
+
+**클래스는 Heap에 생성되기 때문에 스위프트는 그 heap 할당을 관리해줘야 한다. 그걸 이제 reference counting으로 하는 것. reference counting operation이 비교적 자주 일어나고, reference counting의 atomicity 때문에 사소하지 않음. (+ This is just one more resent to use struct. ← 의미를 잘 몰라서 원문으로 둠)**
+
+ 하지만 구조체가 reference를 포함하는 경우(프로퍼티로 가지는 등), 얘네들 또한 reference counting overhead를 지불해야 함. 구조체는 걔네가 가지고있는 reference counting 수만큼 비례해서 오버헤드를 견뎌야 함. 그래서 하나 이상의 reference가 있다면 클래스보다도 더 많은 reference counting 오버헤드가 나올 수 있음.
+
+```swift
+// Modeling Techniques: Reference Counting
+
+struct Attatchment {
+	let fileURL: URL
+	let uuid: String  레퍼런스 카운팅
+	let mimeType: String 
+
+	init?(fileURL: URL, uuid: String, mimeType: String) {
+		guard mimeType.isMimeType
+		else { return nil }
+		
+		self.fileURL = fileURL
+		self.uuid = uuid
+		self.mimeType = mimeType
+	}		
+}
+```
+
+구조체인데 레퍼런스 카운트를 여러 개 가지고 있어서, 더 개선할 여지가 있음.
+
+```swift
+// Modeling Techniques: Reference Counting
+
+enum MimeType: String {
+	case jpeg = "image/jpeg"
+	case png = "image/png"
+	case gif = "image/gif"
+}
+
+struct Attatchment {
+	let fileURL: URL
+	let uuid: UUID // 수정
+	let mimeType: MimeType // 수정
+
+	init?(fileURL: URL, uuid: UUID, mimeType: String) {
+		guard let mimeType = MimeType(rawValue: mimeType)
+		else { return nil }
+		
+		self.fileURL = fileURL
+		self.uuid = uuid
+		self.mimeType = mimeType
+	}		
+}
+```
+
+Stack에 이제 `Attachment`에 대해서 `fileURL`, `uuid`, `mimeType` 이 생성될 텐데, 이때 `fileURL`을 제외하고는 reference counting이 없을 것. `uuid` 와 `mimeType` 이 더이상 String이 아니기 때문에 훨씬 더 type safe하다고 할 수 있고(아무 문자열 값이나 넣지 못하게 됨), reference counting overhead도 적게 듬. 왜냐하면 `uuid`, `mimeType` 이 더이상 reference count나 heap allocated 될 필요 없기 때문.
 
 ## Method dispatch
 
