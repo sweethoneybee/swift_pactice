@@ -270,7 +270,101 @@ for d in drawables {
 3. “내가 이 인스턴스의 메소드를 호출할 때, 이게 statical 하게 dispatch 될까 dynamical 하게 dispatch 될까?”. 
 
 만약 우리가 필요없는 dynamicsm에 대해서 코스트를 지불하고 있다면, 이건 우리의 퍼포먼스를 나쁘게 할 것이다.
+
 ## Protocol types
+
+**Polymorphism without inheritance or reference semantics**
+
+```swift
+protocol Drawable { func draw() }
+
+struct Point: Drawable {
+	var x, y: Double
+	func draw() { ... }
+}
+
+struct Line: Drawable {
+	var x1, y1, x2, y2: Double
+	func draw() { ... }
+}
+
+var drawables: [Drawable]
+for d in drawables {
+	d.draw()
+}
+```
+
+reference semantic이 발생시킬 수 있는 의도하지 않은 sharing을 막기 위해 class가 아닌 struct 타입으로 바꾸고, `Drawable` 프로토콜을 준수하도록 함. 
+
+### Protocol Witness Table
+
+- 프로토콜을 구현하고 있는 타입별로 하나씩 테이블이 존재함. 그 테이블의 엔트리들은 타입 내의 구현체를 연결한다(Point 구조체의 경우, draw의 실제 구현체를 가리킨다고 생각하면 됨).
+
+그렇다면 array의 엘리먼트에서 그 테이블로는 어떻게 갈 수 있을까? 그리고 `Point` 와 `Line` 은 요구하는 word의 크기가 다른데 어떻게 같은 타입의 배열에 저장할 수 있는 걸까?(같은 사이즈가 아님) → Swift는 ‘Existential Container’ 라는 특별한 storage layout을 사용한다.
+
+### Existential Container
+
+- 처음 3개의 word는 valueBuffer를 위해 예약되어 있음. `Point`와 같이 2개의 word만 필요한 작은 타입은 이 valueBuffer에 들어 맞음.
+- 그런데 `Line`은 4개의 word가 필요함. 그래서 이 경우엔 Swift가 힙에 있는 메모리를 할당하고, 거기에 데이터를 저장하고, 그것에 대한 포인터를 existential cotainer에 유지한다.
+- `Point`, `Line` 가 차이가 있으니, 이걸 existential container가 어떻게 관리할 수 있을까. ⇒ Table based mechanism ⇒ ‘**Value Witness Table**’
+
+### Value Witness Table(VWT)
+
+- VWT는 value의 라이프타임을 관리함(allocate, copy, destruct, deallocate)
+- 타입별로 이러한 테이블 중 하나가 있음.
+
+지역변수의 라이프타임을 한번 보자(이 테이블의 동작에 대한 예시)
+
+1. protocl type의 지역변수의 라이프타임이 시작할 때, Swift는 Value Witness Table 안의 allocate 함수를 호출한다. 이 함수는 힙 영역에 메모리를 할당하고, 그 메모리를 가르키는 포인터를 Existential container의 valueBuffer에다가 저장한다.
+2. Swift는 지역변수를 초기화하는 그 assignment의 source로부터 Existential container로 값을 복사할 필요가 있다. `Line`의 경우, VWT의 copy entry가 힙에 있는(아까 할당받아 둔 힙에 있는 value buffer) 메모리 부분에다가 값을 복사해둘 것임
+3. 프로그램이 동작하고, 지역변수의 라이프 타임이 끝날 때면, Swift는 VWT의 destruct entry를 호출할 것임. 이 타입이 들고 있었던 변수에 대한 reference count가 있다면 감소시킬 것임.(Line은 레퍼런스 타입을 들고 있는 게 없으니 이런 작업이 필요 없음)
+4. 끝으로, Swift는 deallocate 함수를 호출하여 이 값을 위해 힙에 할당되었던 메모리를 해제시킴.
+
+그렇다면 어떻게 VWT로 갈 수 있을까?
+
+→ Existential Container에 VWT에 대한 참조가 있음.
+
+그렇다면 어떻게 Protocol Witness Table로 갈 수 있을까?
+
+→ 당연히 이것도  Existential Container에 PWT에 대한 참조가 있음.
+
+**즉, Existential Container가 중심처럼 되어있음. 5 word로 구성되었고 3개는 valueBuffer, 1개는 VWT 참조, 1개는 PWT 참조이다.**
+
+```swift
+// Protocol Types
+// The Existential Container in action
+func drawACopy(local: Drawable) {
+	local.draw()
+}
+let val: Drawable = Point()
+drawACopy(val)
+
+// psuedocode-------------------------
+// 컴파일러가 만들어주는 코드라고 생각하면 됨
+struct ExistContDrawable {
+	var valueBuffer: (Int, Int, Int)
+	var vwt: ValueWitnessTable
+	var pwt: DrawableProtocolWitnessTable  
+}
+
+// drawACopy가 호출될 경우의 ----------------------
+// Generated Code
+func drawACopy(val: ExistContDrawable) {
+	val local = ExistContDrawable()
+	let vwt = val.vwt
+	let pwt = val.pwt
+	local.type = type
+	local.pwt = pwt
+	vwt.allocateBufferAndCopyValue(&local, val)
+	pwt.draw(vwt.projectBuffer(&local)) // projectBuffer는 ExistCond에 valueBuffer 크기를 
+// 넘어갈 경우가 있고(이러면 힙에 값이 있을 것임), 안넘어갈 경우가 있어서 이걸 추상화해주는 함수.
+	vwt.destructAndDeallocateBuffer(temp)
+}
+```
+
+Point, Line과 같은 struct가 Protocol과 결합하여 dynamic behavior, dynamic polymorphism을 갖게 됨. Line과 Point를 drawable protocol type의 array에 저장할 수 있게 됨. **이러한 dynamism이 필요하다면, 충분히 지불할 만한 가치가 있음. 앞선 class를 사용하는  예시와 비교했을 때, class 도 V-Table을 거쳐가야 하고, 또 클래스는 ref count 때문에 추가적인 오버헤드가 있기 때문임.**
+
+여기까지 local variable이 어떻게 복사되는지, 그리고 method가 protocol type의 value에서 어떻게 dispatch 되는지를 봤음.
 
 ## Generics
 
