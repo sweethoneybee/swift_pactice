@@ -364,7 +364,82 @@ func drawACopy(val: ExistContDrawable) {
 
 Point, Line과 같은 struct가 Protocol과 결합하여 dynamic behavior, dynamic polymorphism을 갖게 됨. Line과 Point를 drawable protocol type의 array에 저장할 수 있게 됨. **이러한 dynamism이 필요하다면, 충분히 지불할 만한 가치가 있음. 앞선 class를 사용하는  예시와 비교했을 때, class 도 V-Table을 거쳐가야 하고, 또 클래스는 ref count 때문에 추가적인 오버헤드가 있기 때문임.**
 
-여기까지 local variable이 어떻게 복사되는지, 그리고 method가 protocol type의 value에서 어떻게 dispatch 되는지를 봤음.
+### Indirect Storage with Copy-on-Write
+
+여기까지 local variable이 어떻게 복사되는지, 그리고 method가 protocol type의 value에서 어떻게 dispatch 되는지를 봤음. 그렇다면 stored property는 어떻게 저장될까?
+
+```swift
+struct Pair {
+	init(_ f: Drawable, _ s: Drawable) {
+		first = f ; second = s
+	}
+	var first: Drawable
+	var second: Drawable
+}
+
+var pair = Pair(Line(), Point()) // Point는 valueBuffer 크기 안에 맞음
+pair.second = Line() // 이제 두 개의 힙 메모리 할당이 생김
+```
+
+이 경우 `Pair`는 두 개의 Existential Container를 inline으로 가진다(first, second에 각각 하나씩). 그리고 각 Existential Container는 앞의 설명과 동일하게 동작한다(5개의 word, 이중 3개 valueBuffer, 1개 pwt 포인터, 1개 vwt 포인터. 그리고 valueBuffer를 넘어서면 힙에 메모리를 할당하고 그곳 포인터를 가진다).
+
+이런식으로 구현하면 dynamic polymorphism을 지원하는 것이기에, first나 second에 나중에 프로그램 내에서 다른 타입의 프로퍼티를 저장할 수 있을 것임(여기서도 second가 Point 였다가, Line이 됨). **근데 이렇게 Line을 두 개 저장하면 이제 두 개의 Heap allocation이 나올 것임. 왜냐하면 Line은 Existential Container의 valueBuffer 크기를 넘어섰기 때문.** 
+
+```swift
+let aLine = Line(1.0, 1.0, 1.0, 3.0)
+let pair = Pair(aLine, aLine)
+let copy = pair
+```
+
+위의 코드를 보면, 두 개의 `Line` 으로 `pair` 변수를 생성하고, 그것을 복사하고 있다. 이 경우 처음 `pair` 생성할 때 두 개의 heap allocation, 그리고 이것을 `copy` 에 복사할 때 또 두 개의 heap allocation이 생긴다. 4개의 Heap allocation? 좀 비쌀지도…?
+
+그래서 여기서 reference semantic을 활용할 수 있다. Existential Container의 valueBuffer는 3 words 크기인데, 이 정도면 class의 reference 정도는(1 word) 저장하기에 충분한 크기. **그래서 `Line` 을 class로 구현하면, 위의 코드가 이제 ‘4개의 heap allocation’이 아닌 ‘2개의 heap allocation + ref count 증가’ 정도가 될 것이다.**
+
+잠깐! 그렇다면 class를 사용한다면, 의도하지 않은 상태 공유(unintended state sharing)은 어떻게 막을 것인가? 지금 상태에서 `Line`을 클래스로 만들면 reference semantics가 되고, 상태 공유가 일어날 것이다. 우리가 원하는 건 value semantics인데..! 
+
+**이를 해결할 수 있는 테크닉이 COW(Copy on write)이다.** 우리가 클래스에 뭔가를 write하기 전에, ref count를 체크해서 한 개 이상의 ref count가 동일한 인스턴스에 존재한다면 그 인스턴스를 복사하고, 그 복사본에다가 이제 write를 하면 되는 것이다. 이것은 상태를 decouple 해줄 것이다. 코드예시는 아래와 같다.
+
+```swift
+class LineStorage { var x1, y1, x2, y2: Double }
+struct Line: Drawble {
+	var storage: LineStorage
+	init() { storage = LineStorage(Point(), Point()) }
+	func draw() { ... }
+	
+	mutating func move() {
+		if !isUniquelyReferencedNonObjc(&storage) {
+			storage = LineStorage(storage)
+		}
+		storage.start = ... 
+	}
+}
+```
+
+지금까지 indrect storage를 가지기 위해 copy and write를 사용해서 어떻게 struct와 class를 혼합하는지를 보았음. 
+
+## Performance of Protocol Types
+
+protocol type의 변수들이 어떻게 복사되는지 + 저장되는지, 그리고 어떻게 method dispatch가 작동되는지를 보았고, 이제 퍼포먼스에서 어떤 의미를 갖는지를 보자(앞서 다룬 3가지 측면인 Heap Allocation, Reference Counting, Method dispatch 을 살펴볼 것임).
+
+### Small Value
+
+- 만약 Protocol Type이 Existential Containerd의 Value Buffer 크기에 맞는 Small Value라면 Heap allocation이 일어나지 않을 것이다.
+- 또 reference를 저장하고 있지 않다면 reference counting도 없을 것이다. 그래서 되게 빠른 코드가 될 것임.
+- 하지만 VWT와 PWT를 통한 indirection 때문에 dynamically polymorph behavior를 위한 dynamic dispatch의 완전한 힘을 사용할 수 있음(영상에서 직접적으로 나쁨을 언급하진 않았으나, 피피티 그림과 앞의 설명을 들었을 때, 성능상 조금 떨어짐을 알 수 있음)
+
+### Large Value
+
+- Large value는 protocol tpye의 변수를 초기화하거나 할당할 때 Heap allocation을 발생시킬 수 있음.
+- Potentially reference counting if value contains references
+- Method dispatch는 당연히 좀 비용을 지불해야 함.
+
+Large Value는 Heap allocation에서 많은 비용을 지불해야 함(heap allocation이 많이 발생하기 때문). 하지만 Copy-on-Write 기법을 사용하여, 이 비싼 Heap allocation을 대신해 더 저렴한 reference counting을 늘릴 수 있음(trade off). **class랑 비교하면 거의 비슷한 수준의 가격인듯(3가지 측면 다). 그래서 충분히 만들만한 trade off라고 함.**
+
+### Summary - Protocol Types
+
+- Protocol types는 dynamic form of polymorphism을 제공한다. 그래서 protocol과 함께 value type을 사용하여 protocol type의 array에 값들을 저장할 수 있다(앞서 예시로 `Line`, `Point` 를 저장한 것처럼).
+- 이건 Protocol Witness Table(PWT)과 Value Witness Table(VWT), Existential Container를 사용해서 구현됨
+- Large values를 복사하는 것은 Heap allocation을 발생시킨다. 하지만 이건 구조체를 indirect storage와 copy-and-write를 사용해서 구현함으로써 해결할 수 있다.
 
 ## Generics
 
