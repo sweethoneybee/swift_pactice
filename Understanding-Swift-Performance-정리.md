@@ -443,3 +443,51 @@ Large Value는 Heap allocation에서 많은 비용을 지불해야 함(heap allo
 
 ## Generics
 
+Generic 타입의 변수가 어떻게 저장되고 복사되는지, method dispatch가 어떻게 되는지 보겠음.
+
+```swift
+// Drawing a copy using a generic method
+protocol Drawable {
+	func draw()
+}
+
+func drawACopy<T: Drawable>(local: T) {
+	local.draw()
+}
+
+let = line = Line()
+drawACopy(line)
+// ...
+let point = Point()
+drawACopy(point)
+```
+
+기존에 protocol type을 사용했을 때랑 Generic을 사용했을 때랑 무슨 차이가 있는가? 
+
+→ Generic code는 (parametric polymorphism이라고도 알려진)polymorphism의 더 static한 형태를 지원한다. 
+
+→ One Type per call context.
+
+→ Type이 call chain을 따라내려가면서 교체된다(자세한 건 아래 코드)
+
+```swift
+func foo<T: Drawable>(local: T) {
+	bar(local)
+}
+func bar<T: Drawable>(local: T) { ... }
+
+let point = Point()
+foo(point)
+// 1. foo 함수가 실행됨
+// 2. Swift가 generic type T를 이 call side에서 사용된
+// 타입으로 바인딩한다. 이 경우에는 Point 타입이 될 것임.
+// 3. foo 함수가 이 바인딩으로 실행될 때, 그리고 bar 함수 호출에 도착했을 때
+// local 변수는 방금 발견된 타입인, 즉 Point타입을 갖게 된다.
+// 4. 그래서 다시 Generic parameter T는 이 call context 에서
+// Point 타입으로 바인딩 됨.
+// => Type이 call chain을 따라 내려가면서 교체됨
+```
+
+**위의 예시가 바로 ‘a more static form of polymorphism or parametric polymorphism’을 의미함**
+
+이제 이걸 Swift가 어떻게 비밀리에 구현하는지 봅시당.
