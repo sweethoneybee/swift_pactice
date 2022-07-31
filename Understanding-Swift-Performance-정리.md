@@ -490,4 +490,114 @@ foo(point)
 
 **위의 예시가 바로 ‘a more static form of polymorphism or parametric polymorphism’을 의미함**
 
-이제 이걸 Swift가 어떻게 비밀리에 구현하는지 봅시당.
+이제 이걸 Swift가 어떻게 비밀리에 구현하는지 봅시당. 
+
+```swift
+func drawACopy<T: Drawable>(local: T) {
+	local.draw()
+}
+
+drawACopy(Point(...)) // 여기에 추가로 VWT, PWT를 함수 인자로 넘겨준다
+```
+
+우리가 Protocol type을 사용했을 때처럼, 하나의 shared implementation이 있다. **코드를 보여주자면 앞서서 보여준 코드랑 비슷할 것임(protocol type 보여준 것처럼).** Generically 하게 함수 내부의 operation을 수행하기 위해 Protocol/Value Witness Table을 사용할 것이다.
+
+**하지만 call context당 하나의 type을 가지고 있기 때문에(Generic이니깐), Swift는 Existential Container를 여기서 사용하지 않는다. 대신에, 이 call-site에서 사용된 Type의 VWT와 PWT를 함수에 대한 추가적인 인자(additional arguments)로서 넘겨준다.** 그리고 함수의 실행 중 파라미터를 위한 지역변수를 생성할 때, Swift는 힙에 잠재적으로 필요한 버퍼를 할당하기 위해 그리고 소스로부터 복사를 실행하기 위해 VWT를 사용한다. 그리고 비슷하게 local parameter에 drawACopy 메소드를 실행할 때는, 넘겨받은 PWT를 사용하여 그 테이블의 고정된 offset의 draw method를 찾아내고 그 구현체로(implementation) 점프할 것이다. 
+
+**여기서는 Existential container가 없기 때문에 Swift는 이 인자를 위한 지역번수에 필요한 메모리를 할당하기 위해서 Stack에다가 Value Buffer를 할당(현재 3 wrods)한다.** `Point`와 같은 Small value는 inline으로 저장되고, `Line`과 같은 Large value는 힙에 저장되고 그것에 대한 포인터를 스택에 있는 local existential container에 저장한다. 그리고 이 모든건 vwt의 사용을 위해서 관리된다.
+
+### Specialization of Generics
+
+그래서.. 이게 뭐가 더 나은가? 더 빨라? 더 좋아? 그래서 protocol 타입을 쓰지 말아야하나? 
+
+**→ 이 static form of polymorphism은 ‘Specialization of generics’라고 불리는 컴파일러의 최적화를 할 수 있게 한다.**
+
+```swift
+func drawACopy<T: Drawable>(local: Point) {
+	local.draw()
+}
+
+drawACopy(Point(...))
+```
+
+**위의 코드에서 call-site에서 `Point` 타입을 사용하고 있음. Swift는 generic parameter를 교체하기 위해 함수안의 이 타입을 사용하고, 그 타입에 특정되는 함수 버전을 만든다. 바로 아래처럼.**
+
+```swift
+// Swift가 call-site의 타입을 보고 Point 타입에 특정되는 함수 버전을 만듦.
+func drawACopyOfAPoint(local: Point) {
+	local.draw()
+}
+
+drawACopyOfAPoint(Point(...))
+```
+
+앞서 보여줬듯, 이건 굉장히 빠른 코드가 될 수 있음. 
+
+Swift는 call-site에서 사용된 타입별로 버전을 만들 것이다. 그래서 `Point` 안에 `Line`에 대한 함수를 호출하면, 이건 특별하게 되고 그 함수에 대한 두 가지 버전을 만들게 될 것이다.
+
+```swift
+func drawACopyOfAPoint(local: Point) {
+	local.draw()
+}
+
+func drawACopyOfALine(local: Line) {
+	local.draw()
+}
+
+drawACopyOfAPoint(Point(...))
+drawACopyOfALine(Line(...))
+```
+
+근데 그러면 Code 사이즈를 크게 만들 가능성이 있지 않을까? 하지만 현재 사용가능하지 않은 static typing information은 공격적인 컴파일러 최적화(aggressive complier optimization)를 가능하게 하여, Swift는 실제로 Code 사이즈를 여기서 줄일 수 있다.
+
+```swift
+// Point 메소드의 drawACopy inline 하기 - 1
+func drawACopyOfAPoint(local: Point) {
+	local.draw()
+}
+
+func drawACopyOfALine(local: Line) {
+	local.draw()
+}
+
+let local = Point()
+local.draw()
+drawACopyOfALine(Line(...))
+```
+
+```swift
+// Point 메소드의 drawACopy inline 하기 - 2
+func drawACopyOfAPoint(local: Point) {
+	local.draw()
+}
+
+func drawACopyOfALine(local: Line) {
+	local.draw()
+}
+
+Point().draw()
+drawACopyOfALine(Line(...))
+```
+
+```swift
+// Point 메소드의 drawACopy inline 하기 - 3
+func drawACopyOfALine(local: Line) {
+	local.draw()
+}
+
+Point().draw()
+drawACopyOfALine(Line(...))
+```
+
+```swift
+// 같은 원리로 Line 메소드의 DrawACopy도 inline될 수 있음.
+
+Point().draw()
+Line().draw()
+```
+
+이 컴파일러 최적화가 코드 크기를 증가시키는 것은 아니다(it’s not necessarily the case that this complier optimization will increase code size). 발생할 수는 있지만, 반드시 그런 것은 아니다.
+
+### When Does Specialization Happen?
+
+여기까지 specialization이 어떻게 작동하는지 봤는데, 그럼 언제 이게 발생하는가?
