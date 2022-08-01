@@ -601,3 +601,103 @@ Line().draw()
 ### When Does Specialization Happen?
 
 여기까지 specialization이 어떻게 작동하는지 봤는데, 그럼 언제 이게 발생하는가?
+
+```swift
+struct Point { ... }
+let point = Point()
+drawACopy(point)
+```
+
+이 코드를 specialize 하기 위해서는 Swift는 이 call-site에서 타입을 추론할 수 있어야 한다. 지역 변수를 보고 이것의 초기화로 돌아가보고, `Point`로 초기화 되었는지 볼 수 있기 때문에 타입 추론이 가능하다. 또한 Swift는 specialization 중에 사용된 타입의 정의와 제너릭 함수 그 자체를(?) 가질 필요가 있다.
+
+⇒ (내생각) 타입 추론이 가능하고 Swift가 해당 타입과 함수 정의를 알 수 있어야 specialization이 가능함.
+
+### Whole Module Optimization
+
+이제 위 코드에서 `Point` 의 정의를 다른 분리된 파일로 옮겼다고 가정해보자. 
+
+```swift
+// Point.swift
+struct Point {
+	func draw() {}
+}
+```
+
+```swift
+// UsePoint.swift
+let point = Point()
+drawACopy(point)
+```
+
+이 두 파일을 분리해서 컴파일하게 되면, UsePoint.swift를 컴파일 할 때, `Point` 의 정의가 더이상 사용가능하지 않다. 왜냐하면 컴파일러가 두 파일을 분리해서 컴파일 했기 때문이다. 
+
+하지만 Whole Module Optimization과 함께라면, 컴파일러는 두 개의 파일을 하나의 유닛으로 컴파일 할 것이고, Point.swift 파일의 정의에 대한 insight를 갖게 될 것이다. 그리고 optimization이 발생할 수 있다.
+
+이러한 방식이 optimization opportunity를 굉장히 향상시켜주기 때문에, Whole Module Optimization은 Xcode 8부터 기본으로 사용된다. 
+
+### Generic Stored Properties
+
+```swift
+struct Pair {
+	init(_ f: Drawable, _ s: Drawable) {
+		first = f; second = s
+	}
+	var first: Drawable
+	var second: Drawable
+}
+
+let pairOfLines = Pair(Line(), Line())
+// ...
+let pairOfPoint = Pair(Point(), Point())
+```
+
+`Pair` 타입이 있다. 우리는 이 `Pair`를 만들 때, 같은 타입의 페어를 만들고 싶어할 것이다. `Line`의 페어라든지, `Point`의 페어라든지. 
+
+근데 기억을 되돌려보면, 위의 코드에서 `Line`의 `Pair`는 두 개의 heap allocation이 소모될 것이다.
+
+근데 이 코드를 좀 더 보면 여기서 generic type을 쓸 수 있을 거란 걸 알게 됨.
+
+```swift
+struct Pair<T: Drawable> {
+	init(_ f: T, _ s: T) {
+		first = f; second = s
+	}
+	var first: T
+	var second: T
+}
+
+let pairOfLines = Pair(Line(), Line())
+// ...
+let pairOfPoint = Pair(Point(), Point())
+```
+
+그래서 만약 `Pair`를 generic 하게 정의하고, 첫 번째 + 두 번째 프로퍼티가 이 generic type을 갖게 하면, 컴파일러는 실제로 우리가 오직 같은 타입의 페어를 만들도록 강요할 수 있게 된다. 그래서 Point + Line 같은 조합을 이제 못하게 됨. 하지만 이게 우리가 원하던 것.
+
+**하지만 이러한 방식이 퍼포먼스적으로 더 좋거나 나쁜 게 있을까?**
+
+```swift
+struct Pair<T: Drawable> {
+	init(_ f: T, _ s: T) {
+		first = f; second = s
+	}
+	var first: T
+	var second: T
+}
+
+let pair = Pair(Line(), Line())
+```
+
+- Type은 런타임에 바뀔 수 없음
+    
+    ⇒ Generated code에서 이것의 의미는, Swift가 storage를 enclosing type의 inline으로 할당할 수 있다는 것.
+    
+    ⇒ 그래서 추가적인 힙 할당이 필요 없고, `Pair` 안에 inline으로 저장될 수 있는 것(두 개의 `Line`이) 
+    
+    ⇒ 하지만 이제 `pair.first` 에 `Point`와 같이 다른 타입 할당을 하지 못함. 하지만 이게 우리가 원하던 것.
+    
+
+### Performance of Generic Code
+
+여기까지 unspecialized code가 VWT와 PWT를 사용하여 어떻게 동작하는지(VWT와 PWT를 추가적인 함수 인자로 전달하고, stack에다 Existential Container를 생성), 그리고 컴파일러가 generic function의 type-specifc한 버전들을 만들어냄으로써 어떻게 코드를 specialize하는지(컴파일러가 call-site를 보고 특정되는 타입에 대해서 코드를 생성함. 또 가능하다면 공격적으로 최적화)를 봤음. 
+
+이제 퍼포먼스적인 부분을 보자.
