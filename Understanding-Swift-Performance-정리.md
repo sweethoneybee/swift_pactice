@@ -701,3 +701,39 @@ let pair = Pair(Line(), Line())
 여기까지 unspecialized code가 VWT와 PWT를 사용하여 어떻게 동작하는지(VWT와 PWT를 추가적인 함수 인자로 전달하고, stack에다 Existential Container를 생성), 그리고 컴파일러가 generic function의 type-specifc한 버전들을 만들어냄으로써 어떻게 코드를 specialize하는지(컴파일러가 call-site를 보고 특정되는 타입에 대해서 코드를 생성함. 또 가능하다면 공격적으로 최적화)를 봤음. 
 
 이제 퍼포먼스적인 부분을 보자.
+
+1. Specialized Generics
+- Struct Type(적음 / 적음 / 적음) - struct 타입과 같은 퍼포먼스 특징을 보임
+    - No heap allocation on copying
+    - No reference counting
+    - Static method dispatch
+- Class Type(중간 / 중간 / 중간) - class 타입과 같은 퍼포먼스 특징을 보임
+    - Heap allocation on creating an instance
+    - Reference counting
+    - Dynamic method dispatch thorugh V-table
+1. Unspecialized Generics
+- Small Value(적음 / 적음 / 중간)
+    - No heap allocation: value fits in value Buffer
+    - No reference counting
+    - Dynamic dispatch through Protocol Witness Table
+- Large value (많음 / 중간 / 중간)
+    - Heap allocation (use indirect storage as a workaround)
+    - Reference counting if value contains references
+    - Dynamic dispatch thorugh Protocol Witness Table
+
+## Summary
+
+**Choose fitting abstraction with the least dynamic runtime type requirements**
+
+⇒ static type checking을 가능하게 하고, 컴파일러가 우리 프로그램이 컴파일 타임에 correct하다는 것을 보장할 수 있게 됨. 게다가 컴파일러는 우리 코드를 최적화하기 위한 정보를 더 얻을 수 있으니, 우리는 더 빠른 코드를 얻을 수 있음.
+
+- struct types: value semantics
+- class types: identity or OOP style polymorphism
+- Generics: static polymorphism
+⇒ static polymorphism로 표현될 수 있다면, generic code와 value type을 조합해서 빠른 코드를 얻을 수 있음 + 그 코드에 대한 구현을 공유할 수 있음.
+- Protocol types: dynamic polymorphism
+⇒ Array of Drawable Protocol type 과 같이 dynamic polymorphism 이 필요하다면,  protocol type 과 value type을 조합해서 class 에 비해 빠른 코드를 얻을 수 있음 + 그러면서 여전히 value semantics 를 사용할 수 있음
+
+Use indirect storage to deal with large values
+
+⇒ Protocol 타입을 value semantics와 함께 쓰려는데 copy 하는 데에 너무 많은 cost가 들 수 있으니, 이때는 알려준 Copy-on-Write 기법 써서 indirect storage 사용하라는 의미
